@@ -13,12 +13,211 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model users {
-  id        Int      @id @default(autoincrement())
-  name      String
-  lastname  String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+enum WorkspaceRoles {
+  admin
+  member
+  viewer
+}
+
+enum GlobalUserRoles {
+  Super
+  Regular
+}
+
+enum TaskStatus {
+  pending
+  in_progress
+  completed
+}
+
+enum RecurringFrequency {
+  daily
+  weekly
+  monthly
+  custom
+}
+
+enum TaskPriority {
+  low
+  medium
+  high
+}
+
+enum TaskActivityType {
+  created
+  updated
+  deleted
+  assigned
+  unassigned
+  commented
+  status_changed
+}
+
+enum WorkspaceActivityType {
+  created
+  updated
+  deleted
+  member_added
+  member_removed
+  role_changed
+}
+
+enum UserActivityType {
+  logged_in
+  logged_out
+  profile_updated
+  password_changed
+  preferences_updated
+}
+
+enum TaskAssigneeType {
+  assigned
+  unassigned
+}
+
+enum theme {
+  light
+  dark
+}
+
+model User {
+  id                  String              @id @default(uuid())
+  role                GlobalUserRoles     @default(Regular)
+  email               String              @unique
+  avatarUrl           String? // Optional field
+  passwordHash        String
+  name                String
+  lastName           String
+  createdAt           DateTime            @default(now())
+  preferences         UserPreferences?
+  workspacesOwned     Workspace[]         @relation("OwnerWorkspaces")
+  workspaceMembership WorkspaceMember[]
+  tasksCreated        Task[]              @relation("CreatedTasks")
+  taskActivities      TaskActivity[]
+  workspaceActivities WorkspaceActivity[]
+  userActivities      UserActivity[]
+  taskAssignees       TaskAssignee[]
+  invitedBy           WorkspaceMember[]   @relation("InvitedBy")
+  assignedBy          TaskAssignee[]      @relation("AssignedBy")
+  // The tasks where the user is assigned
+  // Tasks assigned to the user (or tasks where user is assigned)
+}
+
+model UserPreferences {
+  id                       String  @id @default(uuid())
+  userId                   String  @unique
+  theme                    theme   @default(light)
+  notifications            Boolean @default(true)
+  emailNotifications       Boolean @default(true)
+  taskReminders            Boolean @default(true)
+  taskAssignmentAlerts     Boolean @default(true)
+  privacyProfileVisibility Boolean @default(true)
+  privacyLastSeen          Boolean @default(true)
+  taskAutoAccept           Boolean @default(false)
+  defaultTaskPriority      String? // Use values like 'low', 'medium', 'high'
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Workspace {
+  id          String   @id @default(uuid())
+  icon        String?
+  name        String
+  description String?
+  ownerId     String? // Optional if we use SET NULL on deletion
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+  isPersonal  Boolean  @default(false)
+
+  owner      User?               @relation("OwnerWorkspaces", fields: [ownerId], references: [id], onDelete: SetNull)
+  members    WorkspaceMember[]
+  tasks      Task[]
+  recTasks   RecurringTask[]
+  activities WorkspaceActivity[]
+}
+
+model WorkspaceMember {
+  id          String         @id @default(uuid())
+  workspaceId String
+  userId      String
+  role        WorkspaceRoles @default(member) // Alternatively, you can define an enum for roles in Prisma
+  joinedAt    DateTime       @default(now())
+  invitedById String? // Optional field
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  invitedBy User?     @relation("InvitedBy", fields: [invitedById], references: [id], onDelete: SetNull)
+}
+
+model Task {
+  id            String       @id @default(uuid())
+  title         String
+  description   String?
+  status        TaskStatus   @default(pending)
+  priority      TaskPriority
+  workspaceId   String
+  createdById   String?
+  createdAt     DateTime     @default(now())
+  dueDate       DateTime
+  priorityOrder Int          @default(0)
+
+  // Relations
+  workspace  Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdBy  User?          @relation("CreatedTasks", fields: [createdById], references: [id], onDelete: SetNull)
+  assignees  TaskAssignee[]
+  activities TaskActivity[]
+}
+
+model RecurringTask {
+  id          String             @id @default(uuid())
+  title       String
+  description String?
+  workspaceId String
+  created     DateTime           @default(now())
+  frequency   RecurringFrequency @default(custom)
+  workspace   Workspace          @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+}
+
+model TaskAssignee {
+  id           String   @id @default(uuid())
+  taskId       String
+  userId       String
+  assignedAt   DateTime @default(now())
+  assignedById String?
+
+  task       Task  @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user       User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assignedBy User? @relation("AssignedBy", fields: [assignedById], references: [id], onDelete: SetNull)
+}
+
+model TaskActivity {
+  id        String           @id @default(uuid())
+  taskId    String
+  userId    String?
+  action    TaskActivityType
+  details   Json?
+  createdAt DateTime         @default(now())
+
+  task Task  @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model WorkspaceActivity {
+  id          String                @id @default(uuid())
+  workspaceId String
+  userId      String?
+  action      WorkspaceActivityType
+  details     Json?
+  createdAt   DateTime              @default(now())
+  workspace   Workspace             @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user        User?                 @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model UserActivity {
+  id        String           @id @default(uuid())
+  userId    String
+  action    UserActivityType
+  details   Json?
+  createdAt DateTime         @default(now())
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
