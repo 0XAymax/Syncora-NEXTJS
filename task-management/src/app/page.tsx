@@ -10,7 +10,7 @@ export default function Home() {
     <>
       <div className="flex items-center justify-center min-h-screen ">
         <div className="p-8 rounded-lg shadow-lg w-96 flex flex-col items-center">
-          <Logo theme={resolvedTheme == "light" ? "light" : "dark"} isText={true} />
+          <Logo theme={theme == "light" ? "light" : "dark"} isText={true} />
           <LoginForm />
         </div>
       </div>

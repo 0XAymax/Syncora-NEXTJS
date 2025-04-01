@@ -3,7 +3,6 @@ import React, { useRef, useState } from 'react'
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import axios from 'axios';
-import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -17,7 +16,6 @@ import {
 export default function ForgotPassowrd() {
   const emailRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
-  const router = useRouter();
 
   const hanleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -38,8 +36,6 @@ export default function ForgotPassowrd() {
       const token = response.data.token;
 
       window.location.href = `/forgot-password/reset-password?token=${token}`;
-
-      /* router.push("/forgot-password/reset-password"); */
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }catch(err:any){

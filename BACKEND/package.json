@@ -8,7 +8,7 @@
     "start": "nodemon index.js",
     "dev": "npm run db:generate && nodemon index.js",
     "db:generate": "npx prisma generate",
-    "format": "prettier --write \"**/*.js\""
+    "format": "npx prettier --write \"**/*.js\""
   },
   "keywords": [],
   "author": "",
