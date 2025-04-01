@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-
+import { body, validationResult } from "express-validator"
 const SECRET = process.env.JWT_SECRET || "secret";
 
 export const verifyToken = (req, res, next) => {
@@ -19,3 +19,11 @@ export const verifyToken = (req, res, next) => {
     res.status(403).json({ message: "Invalid Token" });
   }
 };
+
+export const handleInputError = (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    next();
+}
