@@ -135,7 +135,9 @@ export const getTasksByUserId = async (req, res) => {
         return res.status(403).json({ error: "Invalid Token" });
       } else {
         console.error("Error decoding token:", error);
-        return res.status(500).json({ error: "Token Decoding Error", details: error.message });
+        return res
+          .status(500)
+          .json({ error: "Token Decoding Error", details: error.message });
       }
     }
 
@@ -152,9 +154,9 @@ export const getTasksByUserId = async (req, res) => {
       where: {
         assignees: {
           some: {
-            userId: userId
-          }
-        }
+            userId: userId,
+          },
+        },
       },
       include: {
         assignees: {
@@ -165,37 +167,37 @@ export const getTasksByUserId = async (req, res) => {
                 name: true,
                 lastName: true,
                 email: true,
-                avatarUrl: true
-              }
+                avatarUrl: true,
+              },
             },
             assignedBy: {
               select: {
                 id: true,
                 name: true,
-                lastName: true 
-              }
-            }
-          }
+                lastName: true,
+              },
+            },
+          },
         },
         createdBy: {
           select: {
             id: true,
             name: true,
             lastName: true,
-            email: true
-          }
+            email: true,
+          },
         },
         workspace: {
           select: {
             id: true,
             name: true,
-            icon: true 
-          }
-        }
+            icon: true,
+          },
+        },
       },
       orderBy: {
-        createdAt: 'desc'
-      }
+        createdAt: "desc",
+      },
     });
 
     console.log("tasks:", tasks);
@@ -206,6 +208,5 @@ export const getTasksByUserId = async (req, res) => {
     console.error("Error fetching tasks for user:", error);
     res.status(500).json({ error: "Internal server error" });
     console.log(error);
-
   }
 };
