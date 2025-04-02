@@ -66,75 +66,74 @@ export const adminPrivileges = async (req, res) => {
     }
 }*/
 export const getWorkspacesByuserId = async (req, res) => {
-    try {
-        const token = req.headers.authorization?.split(" ")[1];
-        if (!token) {
-            return res.status(401).json({ error: "No Token Provided" });
-        }
-
-        // Decode token to extract user ID
-        let decoded;
-        try {
-            decoded = jwt.verify(token, SECRET);
-        } catch (error) {
-            console.error("Error decoding token:", error);
-            return res.status(403).json({ error: "Invalid Token" });
-        }
-        const userId = decoded.id;
-
-        // Debugging log (before using the variable)
-        console.log("userId:", userId);
-
-        if (!userId) {
-            // If the user ID is not found, return an unauthorized error
-            return res.status(401).json({ error: "Unauthorized" });
-        }
-
-        // Fetch all workspaces where the user is a member
-        const workspaces = await prisma.workspace.findMany({
-            where: {
-                members: {
-                    some: {
-                        userId: userId, // Match workspaces where the user is a member
-                    },
-                },
-            },
-            include: {
-                members: {
-                    include: {
-                        user: true, // Include user details for each member
-                    },
-                },
-            },
-        });
-
-        // Debugging log (before sending response)
-        console.log("workspaces:", workspaces);
-
-        // Return the fetched workspaces in the response
-        res.status(200).json(workspaces);
-    } catch (error) {
-        // Log the error and return an internal server error response
-        console.error("Error fetching workspaces:", error);
-        res.status(500).json({ error: "Internal server error" });
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({ error: "No Token Provided" });
     }
+
+    // Decode token to extract user ID
+    let decoded;
+    try {
+      decoded = jwt.verify(token, SECRET);
+    } catch (error) {
+      console.error("Error decoding token:", error);
+      return res.status(403).json({ error: "Invalid Token" });
+    }
+    const userId = decoded.id;
+
+    // Debugging log (before using the variable)
+    console.log("userId:", userId);
+
+    if (!userId) {
+      // If the user ID is not found, return an unauthorized error
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    // Fetch all workspaces where the user is a member
+    const workspaces = await prisma.workspace.findMany({
+      where: {
+        members: {
+          some: {
+            userId: userId, // Match workspaces where the user is a member
+          },
+        },
+      },
+      include: {
+        members: {
+          include: {
+            user: true, // Include user details for each member
+          },
+        },
+      },
+    });
+
+    // Debugging log (before sending response)
+    console.log("workspaces:", workspaces);
+
+    // Return the fetched workspaces in the response
+    res.status(200).json(workspaces);
+  } catch (error) {
+    // Log the error and return an internal server error response
+    console.error("Error fetching workspaces:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 };
 export const getMembersByWorkspaceId = async (req, res) => {
-    try {
-        const { workspaceId } =req.body.workspaceId; 
-        const members = await prisma.workspaceMember.findMany({
-            where: {
-                workspaceId: workspaceId, 
-            },
-            include: {
-                user: true,
-            },
-        });
-        res.status(200).json(members);
-    } catch (error) {
-        console.error("Error fetching members:", error);
-        res.status(500).json({ error: "Internal server error" }); 
-        console.log("Error fetching members:", error);
-    }
-}
-
+  try {
+    const { workspaceId } = req.body.workspaceId;
+    const members = await prisma.workspaceMember.findMany({
+      where: {
+        workspaceId: workspaceId,
+      },
+      include: {
+        user: true,
+      },
+    });
+    res.status(200).json(members);
+  } catch (error) {
+    console.error("Error fetching members:", error);
+    res.status(500).json({ error: "Internal server error" });
+    console.log("Error fetching members:", error);
+  }
+};
