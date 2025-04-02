@@ -6,6 +6,8 @@ const router = express.Router();
 // Middleware to verify token for all routes
 router.post('/tasks', getAllTasks); //ALL TASKS
 
+router.get('/usertasks', taskController.getTasksByUserId);
+
 /* router.get('/tasks/:id', taskController.getTaskById);
 router.post('/tasks', taskController.createTask);
 router.put('/tasks/:id', taskController.updateTask);
