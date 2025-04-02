@@ -358,39 +358,10 @@ export const getAllTasks = async (req, res) => {
  */
 export const getTasksByUserId = async (req, res) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) {
-      console.error("Authorization header missing or malformed");
-      return res.status(401).json({ error: "No Token Provided" });
-    }
-
-    // Decode token to extract user ID
-    let decoded;
-    try {
-      decoded = jwt.verify(token, process.env.JWT_SECRET);
-    } catch (error) {
-      if (error.name === "TokenExpiredError") {
-        console.error("Token has expired:", error);
-        return res.status(403).json({ error: "Token Expired" });
-      } else if (error.name === "JsonWebTokenError") {
-        console.error("Invalid token:", error);
-        return res.status(403).json({ error: "Invalid Token" });
-      } else {
-        console.error("Error decoding token:", error);
-        return res
-          .status(500)
-          .json({ error: "Token Decoding Error", details: error.message });
-      }
-    }
-
-    const userId = decoded.id;
-
-    // Debugging log (before using the variable)
-    console.log("Decoded userId:", userId);
-
+    const { userId } = decodeTokenToUserId(req);
+    console.log("userId:", userId);
     if (!userId) {
-      console.error("Decoded token does not contain a user ID");
-      return res.status(401).json({ error: "Unauthorized: User ID Missing" });
+      return res.status(401).json({ error: "Unauthorized" });
     }
     const tasks = await prisma.task.findMany({
       where: {
