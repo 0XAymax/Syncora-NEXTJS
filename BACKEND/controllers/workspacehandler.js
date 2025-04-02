@@ -116,23 +116,19 @@ export const adminPrivileges = async (req, res, next) => {
     }
 
     if (workspaceMember.role !== "admin") {
-      return res
-        .status(403)
-        .json({
-          message: "User does not have admin privileges in this workspace",
-        });
+      return res.status(403).json({
+        message: "User does not have admin privileges in this workspace",
+      });
     }
 
     console.log("User has admin privileges in the workspace");
     next(); // Proceed to the next middleware or route handler
   } catch (error) {
     console.error("Error checking admin privileges:", error);
-    return res
-      .status(500)
-      .json({
-        message: "Error checking admin privileges",
-        details: error.message,
-      });
+    return res.status(500).json({
+      message: "Error checking admin privileges",
+      details: error.message,
+    });
   }
 };
 
@@ -160,52 +156,10 @@ export const getWorkspacesByuserId = async (req, res) => {
       // If the user ID is not found, return an unauthorized error
       return res.status(401).json({ error: "Unauthorized" });
     }
-
-    // Fetch all workspaces where the user is a member
-    const workspaces = await prisma.workspace.findMany({
-      where: {
-        members: {
-          some: {
-            userId: userId, // Match workspaces where the user is a member
-          },
-        },
-      },
-      include: {
-        members: {
-          include: {
-            user: true, // Include user details for each member
-          },
-        },
-      },
-    });
-
-    // Debugging log (before sending response)
-    console.log("workspaces:", workspaces);
-
-    // Return the fetched workspaces in the response
-    res.status(200).json(workspaces);
   } catch (error) {
-    // Log the error and return an internal server error response
     console.error("Error fetching workspaces:", error);
     res.status(500).json({ error: "Internal server error" });
-  }
-};
-export const getMembersByWorkspaceId = async (req, res) => {
-  try {
-    const { workspaceId } = req.body.workspaceId;
-    const members = await prisma.workspaceMember.findMany({
-      where: {
-        workspaceId: workspaceId,
-      },
-      include: {
-        user: true,
-      },
-    });
-    res.status(200).json(members);
-  } catch (error) {
-    console.error("Error fetching members:", error);
-    res.status(500).json({ error: "Internal server error" });
-    console.log("Error fetching members:", error);
+    console.log("Error fetching workspaces:", error);
   }
 };
 
