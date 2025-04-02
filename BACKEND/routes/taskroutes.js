@@ -35,4 +35,7 @@ router.put("/updateStatus",
     workspaceController.verifyworkspace,
     workspaceController.userMembershipCheck,
     taskController.updateTaskStatus);
+// Filter tasks by status
+router.get('/tasks/status/:status', taskController.getTasksByStatus); */
+
 export default router;
