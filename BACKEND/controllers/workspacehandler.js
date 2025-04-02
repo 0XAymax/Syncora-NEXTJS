@@ -208,3 +208,22 @@ export const getMembersByWorkspaceId = async (req, res) => {
     console.log("Error fetching members:", error);
   }
 };
+
+export const getMembersByWorkspaceId = async (req, res) => {
+  try {
+    const { workspaceId } = req.body.workspaceId;
+    const members = await prisma.workspaceMember.findMany({
+      where: {
+        workspaceId: workspaceId,
+      },
+      include: {
+        user: true,
+      },
+    });
+    res.status(200).json(members);
+  } catch (error) {
+    console.error("Error fetching members:", error);
+    res.status(500).json({ error: "Internal server error" });
+    console.log("Error fetching members:", error);
+  }
+};
