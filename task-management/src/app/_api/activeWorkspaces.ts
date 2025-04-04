@@ -1,7 +1,9 @@
+import { WorkspaceMember } from "@/lib/types";
 import axios from "axios";
 
 const WORKSPACES_API = "http://localhost:3001/api/workspace/workspaces";
-const TASKS_API = "http://localhost:3001/api/task/tasks";
+const MEMBERS_API = "http://localhost:3001/api/workspace/members";
+const TASKS_API = "http://localhost:3001/api/tasks";
 
 interface Task {
   id: string;
@@ -54,31 +56,22 @@ export const fetchActiveWorkspaces = async (): Promise<Workspace[]> => {
   }
 };
 
-export const fetchMembersByWorkspaceId = async (workspaceId: string) => {
-  if (!workspaceId || typeof workspaceId !== "string") {
-    throw new Error("Invalid workspaceId: It must be a non-empty string.");
-  }
-
+export const fetchMembersFromWorkspace = async (
+  workspaceId: string
+): Promise<WorkspaceMember[]> => {
   try {
-    const res = await axios.post(
-      "http://localhost:3001/api/workspace/members",
-      {
-        workspaceId,
-      }
-    );
+    const token = localStorage.getItem("authToken");
 
-    return res.data;
+    const response = await axios.post(MEMBERS_API, {
+      body: { workspaceId },
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const membersData = response.data as WorkspaceMember[];
+
+    return membersData;
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error("Axios error:", error.response?.data || error.message);
-      throw new Error(
-        error.response?.data?.message || "Failed to fetch workspace members."
-      );
-    } else {
-      console.error("Unexpected error:", error);
-      throw new Error(
-        "An unexpected error occurred while fetching workspace members."
-      );
-    }
+    console.error("Error fetching workspaces:", error);
+    return [];
   }
 };
