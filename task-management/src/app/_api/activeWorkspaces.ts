@@ -1,6 +1,8 @@
+import { WorkspaceMember } from "@/lib/types";
 import axios from "axios";
 
 const WORKSPACES_API = "http://localhost:3001/api/workspace/workspaces";
+const MEMBERS_API = "http://localhost:3001/api/workspace/members";
 const TASKS_API = "http://localhost:3001/api/tasks";
 
 interface Task {
@@ -16,9 +18,11 @@ interface Workspace {
 }
 
 // Function to fetch tasks for a given workspace ID
-export const fetchTasksForWorkspace = async (workspaceId: string): Promise<Task[]> => {
+export const fetchTasksForWorkspace = async (
+  workspaceId: string
+): Promise<Task[]> => {
   try {
-    const response = await axios.post(TASKS_API, { workspaceId : workspaceId });
+    const response = await axios.post(TASKS_API, { workspaceId: workspaceId });
     return response.data; // Assuming the API returns an array of tasks
   } catch (error) {
     console.error(`Error fetching tasks for workspace ${workspaceId}:`, error);
@@ -46,6 +50,26 @@ export const fetchActiveWorkspaces = async (): Promise<Workspace[]> => {
     );
 
     return workspacesWithTasks;
+  } catch (error) {
+    console.error("Error fetching workspaces:", error);
+    return [];
+  }
+};
+
+export const fetchMembersFromWorkspace = async (
+  workspaceId: string
+): Promise<WorkspaceMember[]> => {
+  try {
+    const token = localStorage.getItem("authToken");
+
+    const response = await axios.post(MEMBERS_API, {
+      body: { workspaceId },
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const membersData = response.data as WorkspaceMember[];
+
+    return membersData;
   } catch (error) {
     console.error("Error fetching workspaces:", error);
     return [];
