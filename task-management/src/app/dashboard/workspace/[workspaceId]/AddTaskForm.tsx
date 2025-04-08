@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { WorkspaceMember } from "@/lib/types";
-import { fetchMembersByWorkspaceId } from "@/app/_api/activeWorkspaces";
+import { fetchMembersFromWorkspace } from "@/app/_api/activeWorkspaces";
 import {
   Dialog,
   DialogContent,
@@ -25,12 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Plus,
-  ChevronDown,
-  Check,
-  User,
-} from "lucide-react";
+import { Plus, ChevronDown, Check, User } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -38,7 +33,7 @@ import {
 } from "@/components/ui/popover";
 import { addTaskAPI } from "@/app/_api/addTaskAPI";
 import CustomDatePicker from "@/components/datePicker";
-import {ClipLoader} from "react-spinners"
+import { ClipLoader } from "react-spinners";
 
 export function NewTaskDialog({ workspaceId }: { workspaceId: string }) {
   const [members, setMembers] = useState<WorkspaceMember[]>([]);
@@ -48,10 +43,8 @@ export function NewTaskDialog({ workspaceId }: { workspaceId: string }) {
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const [priority, setPriority] = useState("");
   const [error, setError] = useState("");
-  const [open, setOpen] = useState(false); 
+  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,15 +81,15 @@ export function NewTaskDialog({ workspaceId }: { workspaceId: string }) {
       dueDate: dueDate,
       assigneesIds: selectedAssignees,
     };
-    console.log("Task object to send:", task); 
+    console.log("Task object to send:", task);
 
     try {
       const res = await addTaskAPI(task);
       if (res && res.message === "Task created successfully") {
         console.log("✅ Task added successfully!");
         setLoading(false);
-        setOpen(false); 
-        window.location.reload(); 
+        setOpen(false);
+        window.location.reload();
       } else {
         throw new Error("Task creation failed.");
       }
@@ -108,10 +101,10 @@ export function NewTaskDialog({ workspaceId }: { workspaceId: string }) {
       }
       setLoading(false);
     }
-  }; 
+  };
   useEffect(() => {
     const getWorkspaceMembers = async () => {
-      const response = await fetchMembersByWorkspaceId(workspaceId);
+      const response = await fetchMembersFromWorkspace(workspaceId);
       setMembers(response);
     };
     getWorkspaceMembers();
@@ -129,7 +122,7 @@ export function NewTaskDialog({ workspaceId }: { workspaceId: string }) {
       .filter((member) => selectedAssignees.includes(member.user.id))
       .map((member) => member.user.name);
   };
-  
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>

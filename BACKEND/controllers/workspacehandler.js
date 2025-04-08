@@ -138,6 +138,11 @@ export const getWorkspacesByuserId = async (req, res) => {
     if (!token) {
       return res.status(401).json({ error: "No Token Provided" });
     }
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({ error: "No Token Provided" });
+    }
 
     // Decode token to extract user ID
     let decoded;
@@ -148,7 +153,18 @@ export const getWorkspacesByuserId = async (req, res) => {
       return res.status(403).json({ error: "Invalid Token" });
     }
     const userId = decoded.id;
+    // Decode token to extract user ID
+    let decoded;
+    try {
+      decoded = jwt.verify(token, SECRET);
+    } catch (error) {
+      console.error("Error decoding token:", error);
+      return res.status(403).json({ error: "Invalid Token" });
+    }
+    const userId = decoded.id;
 
+    // Debugging log (before using the variable)
+    console.log("userId:", userId);
     // Debugging log (before using the variable)
     console.log("userId:", userId);
 
