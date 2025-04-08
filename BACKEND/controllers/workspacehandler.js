@@ -4,6 +4,7 @@ export const prisma = new PrismaClient();
 import jwt from "jsonwebtoken";
 dotenv.config();
 const SECRET = process.env.JWT_SECRET || "secret";
+
 export const verifyworkspace = async (req, res, next) => {
   const { workspaceId } = req.body;
   try {
@@ -22,6 +23,7 @@ export const verifyworkspace = async (req, res, next) => {
   }
   next();
 };
+
 export const userMembershipCheck = async (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
@@ -138,11 +140,6 @@ export const getWorkspacesByuserId = async (req, res) => {
     if (!token) {
       return res.status(401).json({ error: "No Token Provided" });
     }
-  try {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) {
-      return res.status(401).json({ error: "No Token Provided" });
-    }
 
     // Decode token to extract user ID
     let decoded;
@@ -153,18 +150,6 @@ export const getWorkspacesByuserId = async (req, res) => {
       return res.status(403).json({ error: "Invalid Token" });
     }
     const userId = decoded.id;
-    // Decode token to extract user ID
-    let decoded;
-    try {
-      decoded = jwt.verify(token, SECRET);
-    } catch (error) {
-      console.error("Error decoding token:", error);
-      return res.status(403).json({ error: "Invalid Token" });
-    }
-    const userId = decoded.id;
-
-    // Debugging log (before using the variable)
-    console.log("userId:", userId);
     // Debugging log (before using the variable)
     console.log("userId:", userId);
 
@@ -176,5 +161,24 @@ export const getWorkspacesByuserId = async (req, res) => {
     console.error("Error fetching workspaces:", error);
     res.status(500).json({ error: "Internal server error" });
     console.log("Error fetching workspaces:", error);
+  }
+};
+
+export const getMembersByWorkspaceId = async (req, res) => {
+  try {
+    const { workspaceId } = req.body;
+    const members = await prisma.workspaceMember.findMany({
+      where: {
+        workspaceId: workspaceId,
+      },
+      include: {
+        user: true,
+      },
+    });
+    res.status(200).json(members);
+  } catch (error) {
+    console.error("Error fetching members:", error);
+    res.status(500).json({ error: "Internal server error" });
+    console.log("Error fetching members:", error);
   }
 };
