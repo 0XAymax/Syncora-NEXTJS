@@ -1,3 +1,5 @@
+"use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -5,8 +7,10 @@ import { Plus } from "lucide-react";
 import React from "react";
 import { TabsContent } from "@/components/ui/tabs";
 import { useMembersByWorkspace } from "@/hooks/use-workspace";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function MembersTab({ workspaceId }: { workspaceId: string }) {
+  const { currentUser } = useAuth();
   const { data: members } = useMembersByWorkspace(workspaceId);
 
   return (
@@ -46,11 +50,14 @@ export default function MembersTab({ workspaceId }: { workspaceId: string }) {
                       <AvatarImage
                         src={`/placeholder.svg?height=32&width=32`}
                       />
-                      <AvatarFallback>{member.user.name.charAt(0)}</AvatarFallback>
+                      <AvatarFallback>
+                        {member.user.name.charAt(0)}
+                      </AvatarFallback>
                     </Avatar>
                     <div>
                       <div className="text-sm font-medium">
-                        {member.user.name} {member.user.id === currentUser.id && "(You)"}
+                        {member.user.name}
+                        {member.user.id === currentUser.id && " (You)"}
                       </div>
                       <div className="text-xs text-muted-foreground">
                         {member.role}
