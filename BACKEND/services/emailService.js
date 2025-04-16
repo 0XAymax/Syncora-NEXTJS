@@ -21,7 +21,7 @@ export async function sendVerificationEmail(dest,code) {
         const mailOptions = {
             from: `Syncora <MS_pdttEL@trial-2p0347z5v57lzdrn.mlsender.net>`,
             to : dest,
-            subject: "Your Verification Code",
+            subject: "Your Verification Code ajmi",
             html: `<p>Your verification code is: <strong>${code}</strong></p>`,
         };
 

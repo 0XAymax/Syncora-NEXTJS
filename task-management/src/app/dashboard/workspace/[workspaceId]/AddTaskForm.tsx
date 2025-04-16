@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
-import { WorkspaceMember } from "@/lib/types";
+import { Task, WorkspaceMember } from "@/lib/types";
 import { fetchMembersFromWorkspace } from "@/app/_api/activeWorkspaces";
 import {
   Dialog,
@@ -31,11 +31,17 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { addTaskAPI } from "@/app/_api/addTaskAPI";
+import { addTaskAPI } from "@/app/_api/TasksAPI";
 import CustomDatePicker from "@/components/datePicker";
 import { ClipLoader } from "react-spinners";
 
-export function NewTaskDialog({ workspaceId }: { workspaceId: string }) {
+export function NewTaskDialog({
+  workspaceId,
+  setTodos,
+}: {
+  workspaceId: string;
+  setTodos: React.Dispatch<React.SetStateAction<Task[]>>;
+}) {
   const [members, setMembers] = useState<WorkspaceMember[]>([]);
   const [selectedAssignees, setSelectedAssignees] = useState<string[]>([]);
   const [dueDate, setDueDate] = useState<string>("");
@@ -72,7 +78,6 @@ export function NewTaskDialog({ workspaceId }: { workspaceId: string }) {
       setLoading(false);
       return;
     }
-    console.log("dueDate before API call: ", dueDate);
     const task = {
       title,
       description,
@@ -86,10 +91,9 @@ export function NewTaskDialog({ workspaceId }: { workspaceId: string }) {
     try {
       const res = await addTaskAPI(task);
       if (res && res.message === "Task created successfully") {
-        console.log("✅ Task added successfully!");
         setLoading(false);
         setOpen(false);
-        window.location.reload();
+        setTodos((prev) => [res.task, ...prev]);
       } else {
         throw new Error("Task creation failed.");
       }

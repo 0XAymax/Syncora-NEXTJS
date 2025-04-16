@@ -1,8 +1,8 @@
 import { handleInputError } from "../middleware/middleware.js";
-import { getAllTasks } from "../controllers/taskhandlers.js";
-import * as taskController from "../controllers/taskhandlers.js";
-import * as workspaceController from "../controllers/workspacehandler.js";
-import express from "express";
+import { getAllTasks } from "../controllers/taskhandlers.js"
+import * as taskController from "../controllers/taskhandlers.js"
+import * as workspaceMiddleware from "../middleware/workspacemiddleware.js"
+import express from "express"
 const router = express.Router();
 
 // Middleware to verify token for all routes
@@ -17,28 +17,28 @@ router.delete('/tasks/:id', taskController.deleteTask);
 
 router.post("/create",
     handleInputError,
-    workspaceController.verifyworkspace,
-    workspaceController.userMembershipCheck,
-    workspaceController.adminPrivileges,
+    workspaceMiddleware.verifyworkspace,
+    workspaceMiddleware.userMembershipCheck,
+    // workspaceMiddleware.adminPrivileges,
     taskController.CreateTask);
 
 router.delete("/delete",
     handleInputError,
-    workspaceController.verifyworkspace,
-    workspaceController.userMembershipCheck,
-    workspaceController.adminPrivileges,
+    workspaceMiddleware.verifyworkspace,
+    workspaceMiddleware.userMembershipCheck,
+    /* workspaceMiddleware.adminPrivileges, */
     taskController.DeleteTask);   
 
 router.put("/updateTask",
     handleInputError,
-    workspaceController.verifyworkspace,
-    workspaceController.userMembershipCheck,
-    workspaceController.adminPrivileges,
+    workspaceMiddleware.verifyworkspace,
+    workspaceMiddleware.userMembershipCheck,
+    /* workspaceMiddleware.adminPrivileges, */
     taskController.UpdateTask);
 router.put("/updateStatus",
     handleInputError,
-    workspaceController.verifyworkspace,
-    workspaceController.userMembershipCheck,
+    workspaceMiddleware.verifyworkspace,
+    workspaceMiddleware.userMembershipCheck,
     taskController.updateTaskStatus);
 // Filter tasks by status
 router.get('/tasks/status/:status', taskController.getTasksByStatus); */

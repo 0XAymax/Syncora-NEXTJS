@@ -3,7 +3,7 @@ import axios from "axios";
 
 const WORKSPACES_API = "http://localhost:3001/api/workspace/workspaces";
 const MEMBERS_API = "http://localhost:3001/api/workspace/members";
-const TASKS_API = "http://localhost:3001/api/tasks";
+const TASKS_API = "http://localhost:3001/api/task/tasks";
 
 interface Task {
   id: string;

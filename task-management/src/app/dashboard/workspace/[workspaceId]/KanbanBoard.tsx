@@ -1,64 +1,15 @@
-<<<<<<< HEAD:task-management/src/app/dashboard/workspace/[workspaceId]/TodoTab.tsx
+"use client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { TabsContent } from "@/components/ui/tabs";
+import { Task } from "@/lib/types";
+import axios from "axios";
 import { MoreVertical } from "lucide-react";
 import React from "react";
 
 function TodoTab({ workspaceId }: { workspaceId: string }) {
-  const todos = [
-    {
-      id: "1",
-      title: "Finish project documentation",
-      due: "Today",
-      assigne: "Person X",
-      status: "Done",
-    },
-    {
-      id: "2",
-      title: "Review pull requests",
-      due: "Tomorrow",
-      assigne: "Person X",
-      status: "On going",
-    },
-    {
-      id: "3",
-      title: "Fix UI bugs in dashboard",
-      due: "Friday",
-      assigne: "Person X",
-      status: "On going",
-    },
-    {
-      id: "4",
-      title: "Optimize database queries",
-      due: "Friday",
-      assigne: "Person X",
-      status: "Done",
-    },
-    {
-      id: "5",
-      title: "Plan next sprint tasks",
-      due: "Sunday",
-      assigne: "Person X",
-      status: "Done",
-    },
-  ];
-  const OngoingTasks = todos.filter((todo) => todo.status == "On going");
-  const doneTasks = todos.filter((todo) => todo.status == "Done");
-=======
-"use client"
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { TabsContent } from '@/components/ui/tabs';
-import { Task } from '@/lib/types';
-import axios from 'axios';
-import { MoreVertical } from 'lucide-react';
-import React from 'react'
-
-function TodoTab({workspaceId}:{workspaceId :string}) {
-  const [todos,setTodos]=React.useState<Task[]>()
+  const [todos, setTodos] = React.useState<Task[]>();
   React.useEffect(() => {
     const getTasks = async () => {
       try {
@@ -78,9 +29,8 @@ function TodoTab({workspaceId}:{workspaceId :string}) {
     getTasks();
   }, [workspaceId]);
   const todoTasks = todos?.filter((todo) => todo.status === "pending");
-  const OngoingTasks=todos?.filter((todo) => todo.status == "in_progress")
-  const doneTasks=todos?.filter((todo) => todo.status == "completed")
->>>>>>> 723a3d9cbac1f249b67aecd3bd40053355aee431:task-management/src/app/dashboard/workspace/[workspaceId]/KanbanBoard.tsx
+  const OngoingTasks = todos?.filter((todo) => todo.status == "in_progress");
+  const doneTasks = todos?.filter((todo) => todo.status == "completed");
   return (
     <TabsContent value="kanban" className="space-y-6">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">

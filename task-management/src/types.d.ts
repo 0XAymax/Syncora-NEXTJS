@@ -41,3 +41,12 @@ export type TaskRequest = {
   dueDate: string;
   assigneesIds: string[];
 };
+
+export type TaskUpdateRequest = {
+  title: string;
+  description?: string;
+  priority: string;
+  workspaceId: string;
+  dueDate: string;
+  assignees: string[];
+};

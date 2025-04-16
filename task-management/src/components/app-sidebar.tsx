@@ -140,7 +140,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       if (item.hasDropdown) {
         item.dropdownItems = workspaces.map((workspace) => ({
           name: workspace.name,
-          url: `/dashboard/workspace?id=${workspace.id}`,
+          url: `/dashboard/workspace/${workspace.id}`,
           active: workspace.id === "someDefaultWorkspaceId", 
         }));
       }

@@ -1,6 +1,6 @@
 import React from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import TodoTab from "./TodoTab";
+import TodoTab from "./KanbanBoard";
 import TaskTab from "./TaskTab";
 import CalendarTab from "./CalendarTab";
 import MembersTab from "./MembersTab";
@@ -18,8 +18,8 @@ async function page({ params }: { params: Promise<{ workspaceId: string }> }) {
         </TabsList>
         <TodoTab workspaceId={workspaceId} />
         <TaskTab workspaceId={workspaceId} />
-        <CalendarTab workspaceId={workspaceId} />
         <MembersTab workspaceId={workspaceId} />
+        <CalendarTab workspaceId={workspaceId} />
       </Tabs>
     </div>
   );
