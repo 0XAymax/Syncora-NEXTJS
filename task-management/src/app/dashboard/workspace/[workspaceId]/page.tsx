@@ -16,9 +16,9 @@ async function page({ params }: { params: Promise<{ workspaceId: string }> }) {
           <TabsTrigger value="calendar">Calendar</TabsTrigger>
           <TabsTrigger value="members">Members</TabsTrigger>
         </TabsList>
-        <TodoTab />
-        <TaskTab />
-        <CalendarTab />
+        <TodoTab workspaceId={workspaceId} />
+        <TaskTab workspaceId={workspaceId} />
+        <CalendarTab workspaceId={workspaceId} />
         <MembersTab workspaceId={workspaceId} />
       </Tabs>
     </div>

@@ -23,10 +23,7 @@ import { EditTaskDialog } from "./EditTaskForm";
 import axios from "axios";
 import { cn } from "@/lib/utils";
 import { Task } from "@/lib/types";
-import { useSearchParams } from "next/navigation";
-function TaskTab() {
-  const searchParams = useSearchParams();
-  const workspaceId = searchParams.get("id");
+function TaskTab({ workspaceId }: { workspaceId: string }) {
   const [todos, setTodos] = useState<Task[]>([]);
   const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
 

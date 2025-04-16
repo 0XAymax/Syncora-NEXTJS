@@ -260,6 +260,7 @@ export const updateTaskStatus = async (req, res) => {
 export const getAllTasks = async (req, res) => {
   try {
     const { workspaceId } = req.body;
+    console.log(workspaceId);
     const tasks = await prisma.task.findMany({
       where: {
         workspaceId: workspaceId,

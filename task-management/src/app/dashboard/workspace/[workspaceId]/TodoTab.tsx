@@ -1,11 +1,11 @@
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { TabsContent } from '@/components/ui/tabs';
-import { MoreVertical } from 'lucide-react';
-import React from 'react'
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { TabsContent } from "@/components/ui/tabs";
+import { MoreVertical } from "lucide-react";
+import React from "react";
 
-function TodoTab() {
+function TodoTab({ workspaceId }: { workspaceId: string }) {
   const todos = [
     {
       id: "1",
@@ -26,25 +26,25 @@ function TodoTab() {
       title: "Fix UI bugs in dashboard",
       due: "Friday",
       assigne: "Person X",
-      status : "On going",
+      status: "On going",
     },
     {
       id: "4",
       title: "Optimize database queries",
       due: "Friday",
       assigne: "Person X",
-      status :"Done",
+      status: "Done",
     },
     {
       id: "5",
       title: "Plan next sprint tasks",
       due: "Sunday",
       assigne: "Person X",
-      status:"Done",
+      status: "Done",
     },
   ];
-  const OngoingTasks=todos.filter((todo) => todo.status == "On going")
-  const doneTasks=todos.filter((todo) => todo.status == "Done")
+  const OngoingTasks = todos.filter((todo) => todo.status == "On going");
+  const doneTasks = todos.filter((todo) => todo.status == "Done");
   return (
     <TabsContent value="kanban" className="space-y-6">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -142,4 +142,4 @@ function TodoTab() {
   );
 }
 
-export default TodoTab
+export default TodoTab;
