@@ -12,25 +12,29 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Delete } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { deleteTaskAPI } from "@/app/_api/TasksAPI";
-import { Task } from "@/lib/types";
+import { WorkspaceMember } from "@/lib/types";
+import { kickMemberAPI } from "@/app/_api/WorkspacesAPIs";
 import { toast } from "sonner";
 export default function DeleteTaskAlert({
   workspaceId,
-  taskId,
-  setTodos,
+  member,
+  setMembers,
 }: {
   workspaceId: string;
-  taskId: string;
-  setTodos: React.Dispatch<React.SetStateAction<Task[]>>;
+  member: WorkspaceMember;
+  setMembers: React.Dispatch<React.SetStateAction<WorkspaceMember[]>>;
 }) {
-  const handleDeleteClick = async () => {
+  const handleClick = async () => {
     try {
-      const res = await deleteTaskAPI(workspaceId, taskId);
-      setTodos((prev) => prev.filter((todo) => todo.id != res.deletedTask.id));
-      toast.success("Task deleted successfully.");
+      const data = await kickMemberAPI(workspaceId, member.id);
+      setMembers((prev) => {
+        console.log(prev);
+        console.log(data.deletedMember);
+        return prev.filter((member) => member.id != data.deletedMember.id);
+      });
+      toast.success("Kicked member successfully.");
     } catch (error) {
-      console.error(`Error Deleting task ${taskId}:`, error);
+      console.error(`Error kicking member:`, error);
       toast.error("Error deleting task");
     }
   };
@@ -39,24 +43,31 @@ export default function DeleteTaskAlert({
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button
-            variant="ghost"
-            className="w-full h-8 justify-start text-destructive focus:text-destructive cursor-pointer"
+            variant="destructive"
+            size="sm"
+            className="h-7 text-xs hover:bg-destructive/90"
           >
             <Delete className="mr-2 h-2 w-4" />
-            Delete
+            Kick
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              Do you want to delete this task ?
+              Do you want to kick{" "}
+              {member.user.name + " " + member.user.lastName} (
+              {member.user.email}) from the workspace? This action cannot be
+              undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteClick}>
-              Continue
+            <AlertDialogAction
+              onClick={handleClick}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Kick {member.user.name + " " + member.user.lastName}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -190,27 +190,33 @@ export const removeMemberFromWorkspace = async (req, res) => {
   const { workspaceId, memberId } = req.body;
   const currentUserId = req.userId;
   if (currentUserId === memberId) {
-    return res
-      .status(400)
-      .json({ message: "You cannot remove yourself. Use /leave instead." });
+    return res.status(400).json({ message: "You cannot kick yourself" });
   }
 
   const member = await prisma.workspaceMember.findFirst({
     where: {
       workspaceId,
-      userId: memberId,
+      id: memberId,
     },
-    select: { role: true },
+    select: { role: true, id: true },
   });
+
+  if (!member) {
+    console.log(workspaceId + " " + memberId);
+    return res.status(404).json({ message: "Member not found in workspace." });
+  }
+
   if (member.role === "admin" && !req.is_owner) {
     return res
       .status(403)
       .json({ message: "Only the workspace owner can remove an admin." });
   }
-  await prisma.workspaceMember.deleteMany({
-    where: { workspaceId, userId: memberId },
+  await prisma.workspaceMember.delete({
+    where: { id: memberId },
   });
-  return res.status(200).json({ message: "Member removed from workspace." });
+  return res
+    .status(200)
+    .json({ message: "Member removed from workspace.", deletedMember: member });
 };
 export const exitWorkspace = async (req, res) => {
   const { workspaceId } = req.body;
@@ -243,6 +249,7 @@ export const exitWorkspace = async (req, res) => {
     return res.status(200).json({ message: "You have left the workspace." });
   }
 };
+
 export const changeUserRole = async (req, res) => {
   const { workspaceId, memberId, newRole } = req.body;
   const currentUserId = req.userId;

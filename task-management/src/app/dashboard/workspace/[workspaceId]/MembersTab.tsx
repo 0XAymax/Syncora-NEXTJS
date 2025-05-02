@@ -10,6 +10,7 @@ import { Workspace } from "@/types";
 import { EditPermissionsForm } from "./_MembersCRUDComponents/EditPermissionsForm";
 import { WorkspaceMember } from "@/lib/types";
 import { User } from "@/hooks/use-auth";
+import KickMemberAlert from "./_MembersCRUDComponents/KickMemberAlert";
 
 export default function MembersTab({
   workspace,
@@ -120,16 +121,22 @@ export default function MembersTab({
                       </div>
                     </div>
                   </div>
-                  {canChangePermission(currentUser, member) && (
-                    <div className="flex gap-2">
-                      <EditPermissionsForm
-                        members={members}
-                        member={member}
-                        setMembers={setMembers}
-                        workspace={workspace}
-                      />
-                    </div>
-                  )}
+                  {canChangePermission(currentUser, member) &&
+                    currentUser?.id !== member.user.id && (
+                      <div className="flex gap-2">
+                        <EditPermissionsForm
+                          members={members}
+                          member={member}
+                          setMembers={setMembers}
+                          workspace={workspace}
+                        />
+                        <KickMemberAlert
+                          member={member}
+                          setMembers={setMembers}
+                          workspaceId={workspace.id}
+                        />
+                      </div>
+                    )}
                 </div>
               ))}
           </div>

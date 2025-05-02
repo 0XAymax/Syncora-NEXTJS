@@ -21,6 +21,8 @@ const CHANGE_ROLE_API = `${API_URL}/api/workspace/change-role`;
 const TASKS_API = `${API_URL}/api/task/tasks`;
 const DELETE_WORKSPACE_API = `${API_URL}/api/workspace/delete`;
 const WORKSPACE_API = `${API_URL}/api/workspace/check/`;
+const REMOVE_MEMBER_API = `${API_URL}/api/workspace/remove-member`;
+const LEAVE_API = `${API_URL}/api/workspace/leave`;
 
 export const createWorkspaceAPI = async (workspace: WorkspaceCreateRequest) => {
   const token = localStorage.getItem("token");
@@ -154,5 +156,31 @@ export const changeRoleAPI = async (
     return response;
   } catch (error) {
     console.error("Error changing role:", error);
+  }
+};
+
+export const kickMemberAPI = async (workspaceId: string, memberId: string) => {
+  const token = localStorage.getItem("token");
+  try {
+    const response = await axios.delete(REMOVE_MEMBER_API, {
+      headers: { Authorization: `Bearer ${token}` },
+      data: { workspaceId, memberId },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting workspace:", error);
+  }
+};
+
+export const leaveWorkspaceAPI = async (workspaceId: string) => {
+  const token = localStorage.getItem("token");
+  try {
+    const response = await axios.delete(LEAVE_API, {
+      headers: { Authorization: `Bearer ${token}` },
+      data: { workspaceId },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error leaving workspace:", error);
   }
 };
