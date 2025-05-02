@@ -231,17 +231,39 @@ export const exitWorkspace = async (req, res) => {
   });
 
   if (req.is_owner && !req.is_personal) {
-    return res
-      .status(400)
-      .json({ message: "Workspace owner cannot leave the workspace." });
+    const mostSeniorAdmin = await prisma.workspaceMember.findFirst({
+      where: {
+        workspaceId,
+        role: "admin",
+      },
+      orderBy: {
+        createdAt: "asc",
+      },
+    });
+    if (mostSeniorAdmin) {
+      await prisma.workspaceMember.update({
+        where: {
+          id: mostSeniorAdmin.id,
+        },
+        data: {
+          role: "owner",
+        },
+      });
+    }
+    await prisma.workspaceMember.deleteMany({
+      where: { workspaceId, userId },
+    });
+    return res.status(200).json({ message: "You have left the workspace." });
   } else if (req.is_owner && req.is_personal) {
     // If the owner is leaving a personal workspace, delete the workspace
     await prisma.workspace.delete({
       where: { id: workspaceId },
     });
-    return res.status(200).json({
-      message: "You have left the workspace and it has been deleted.",
-    });
+    return res
+      .status(200)
+      .json({
+        message: "You have left the workspace and it has been deleted.",
+      });
   } else {
     await prisma.workspaceMember.deleteMany({
       where: { workspaceId, userId },
@@ -337,7 +359,6 @@ export const updateworkspace = async (req, res) => {
     });
   }
 };
-
 // NOT DONE
 export const getAllWorkspaceDetails = async (req, res) => {
   try {
@@ -396,5 +417,68 @@ export const getAllWorkspaceDetails = async (req, res) => {
       message: "Error fetching workspace details",
       error: error.message,
     });
+  }
+};
+export const appointSuccessor = async (req, res) => {
+  const userId = req.userId;
+  const successorId = req.body.successorId;
+  const workspaceId = req.body.workspaceId;
+  console.log("Appointing successor:", { userId, successorId, workspaceId });
+  try {
+    const succaaaa = await prisma.workspace.update({
+      where: {
+        id: workspaceId,
+        ownerId: userId,
+      },
+      data: {
+        successorId: successorId,
+      },
+    });
+    console.log("succaaaa:", succaaaa);
+    console.log("Successor appointed successfully");
+    console.log("userId:", userId);
+  } catch (error) {
+    console.error("Error appointing successor:", error);
+    return res
+      .status(500)
+      .json({ message: "Error appointing successor", error: error.message });
+  }
+};
+export const transferOwnership = async (req, res) => {
+  // this will be used to transfer ownership of a workspace to another user
+  const { workspaceId, successorId } = req.body;
+  const test = await prisma.workspaceMember.updateMany({
+    where: {
+      userId: successorId,
+      workspaceId: workspaceId,
+    },
+    data: {
+      role: "admin",
+    },
+  });
+
+  await prisma.workspace.update({
+    where: { id: workspaceId },
+    data: {
+      ownerId: successorId,
+      successorId: null,
+    },
+  });
+};
+export const checkIsEmpty = async (req, res) => {
+  const workspaceId = req.body.workspaceId;
+  try {
+    const members = await prisma.workspaceMember.findMany({
+      where: { workspaceId: workspaceId },
+      select: { userId: true },
+    });
+    if (members.length > 1) {
+      req.is_empty = false;
+    } else {
+      req.is_empty = true;
+    }
+  } catch (error) {
+    console.error("checkIsEmpty middleware error:", error);
+    res.status(500).json({ message: "Server error checking empty workspace." });
   }
 };

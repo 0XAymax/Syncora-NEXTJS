@@ -15,5 +15,4 @@ DROP TYPE "InboxType_old";
 ALTER TABLE "Inbox" ALTER COLUMN "type" SET DEFAULT 'generic';
 COMMIT;
 
--- AlterTable
-ALTER TABLE "Inbox" ADD COLUMN     "details" JSONB;
+

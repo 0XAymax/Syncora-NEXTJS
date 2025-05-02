@@ -1,5 +1,5 @@
 "use client";
-import {  useRef, useState } from "react";
+import {useEffect, useState} from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,17 +12,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Edit } from "lucide-react";
 import { updateTaskAPI } from "@/app/_api/TasksAPI";
 import CustomDatePicker from "@/components/datePicker";
 import { ClipLoader } from "react-spinners";
@@ -31,22 +22,40 @@ import {toast} from "sonner";
 export function EditTaskDialog({
   workspaceId,
   taskId,
+  todos,
   setTodos,
+  open,
+  onOpenChange
 }: {
   workspaceId: string;
-  taskId :string
+  taskId :string;
+  todos : Task[]
   setTodos: React.Dispatch<React.SetStateAction<Task[]>>;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }) {
   const [dueDate, setDueDate] = useState<string>("");
-  const titleRef = useRef<HTMLInputElement>(null);
-  const descriptionRef = useRef<HTMLTextAreaElement>(null);
-  const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
+  const prevTodo=todos.find((todo) => todo.id == taskId);
+
+  useEffect(() => {
+    if (open && prevTodo) {
+      setTitle(prevTodo.title || "");
+      setDescription(prevTodo.description || "");
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      setDueDate(prevTodo.dueDate);
+    }
+  }, [open, prevTodo]);
+
+  const closeModal = () => {
+    onOpenChange?.(false);
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const title = titleRef.current?.value.trim();
-    const description = descriptionRef.current?.value.trim();
     setLoading(true);
     
   const task = {
@@ -56,16 +65,16 @@ export function EditTaskDialog({
     dueDate:dueDate === "" ? undefined  :dueDate,
   };
 
-    console.log("Task object to send:", task);
     try {
       const res = await updateTaskAPI(workspaceId,taskId,task);
       if (res && res.message === "Task updated successfully.") {
-
+        console.log("Updated Task",res.updatedTask);
         setTodos((prev) =>
             prev.map((t) => (t.id === res.updatedTask.id ? res.updatedTask : t))
           );
+        console.log("TODOS after update",todos);
         setLoading(false);
-        setOpen(false);
+        closeModal();
         toast.success("Task updated successfully.");
       } else {
         throw new Error("Task update failed.");
@@ -81,16 +90,7 @@ export function EditTaskDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          className="w-full h-8 justify-start text-muted-foreground"
-        >
-          <Edit className="mr-2 h-4 w-4" />
-          Edit
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <form>
           <DialogHeader>
@@ -102,20 +102,26 @@ export function EditTaskDialog({
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
               <Label htmlFor="title">Title</Label>
-              <Input id="title" placeholder="Enter task title" ref={titleRef} />
+              <Input
+                  id="title"
+                  placeholder="Enter task title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)} />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="description">Description</Label>
               <Textarea
                 id="description"
                 placeholder="Enter task description"
-                ref={descriptionRef}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2 ">
                 <Label htmlFor="status">Due Date</Label>
                 <CustomDatePicker
+                  defaultValue={dueDate}
                   onChange={(timestamp) => setDueDate(timestamp)}
                 />
               </div>

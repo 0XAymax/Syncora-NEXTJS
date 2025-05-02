@@ -5,15 +5,17 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 interface Props {
-  onChange: (timestamp: string) => void; 
+  onChange: (timestamp: string) => void;
+  defaultValue?: string;
 }
 
-const CustomDatePicker: React.FC<Props> = ({ onChange }) => {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+const CustomDatePicker: React.FC<Props> = ({ onChange,defaultValue }) => {
+  const [selectedDate, setSelectedDate] = useState<Date | null>(
+      defaultValue ? new Date(defaultValue) : null
+  );
 
   const handleChange = (date: Date | null) => {
     setSelectedDate(date);
-
     if (date) {
       const timestamp = date.toISOString(); // Format: "YYYY-MM-DDTHH:mm:ss.sssZ"
       onChange(timestamp);

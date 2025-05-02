@@ -6,9 +6,10 @@ import EmojiPicker from "emoji-picker-react";
 import {Label} from "@radix-ui/react-menu";
 import {Plus} from "lucide-react";
 
-export default function EmojiSelector({ onSelectAction } :{onSelectAction : React.Dispatch<React.SetStateAction<string>>}) {
+export default function EmojiSelector({ onSelectAction,defaultValue} :{onSelectAction : React.Dispatch<React.SetStateAction<string>>,defaultValue?:string}) {
     const [showPicker, setShowPicker] = useState(false);
-    const [selectedEmoji, setSelectedEmoji] = useState("");
+    const [selectedEmoji, setSelectedEmoji] = useState(
+        defaultValue ? defaultValue : "");
     return (
         <div className="relative flex items-center gap-2">
             <Label className="text-sm font-medium">Emoji</Label>

@@ -28,11 +28,11 @@ interface AuthContextType {
   token: string | null;
   login: (email: string, password: string) => Promise<any>;
   register: (
-    email: string,
-    name: string,
-    lastName: string,
-    password: string
-  ) => Promise<any>;
+      email: string,
+      name: string,
+      lastName: string,
+      password: string
+      , avatarSrc: string | null) => Promise<any>;
   checkEmail: (email: string) => Promise<any>;
   logout: () => void;
   isAuthenticated: boolean;
@@ -136,9 +136,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     email: string,
     name: string,
     lastName: string,
-    password: string
+    password: string,
+    avatarUrl?:string,
   ): Promise<any> => {
-    const res = await registerAPI(email, name, lastName, password);
+    const res = await registerAPI(email, name, lastName, password,avatarUrl);
     console.log(res.data);
     return res;
   };

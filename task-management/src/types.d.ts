@@ -1,7 +1,7 @@
 export interface Task {
   id: string;
   title: string;
-  dueDate?: string;
+  dueDate: string;
 }
 
 export interface Workspace {
@@ -12,7 +12,7 @@ export interface Workspace {
   defaultOpen: boolean;
   isPersonal?: boolean;
   icon?: string;
-  updatedAt?:string;
+  updatedAt:string;
   tasks: Task[];
 }
 interface User {
@@ -97,4 +97,33 @@ export interface Inbox {
   createdAt: Date;
   read: boolean;
   sender?: User | null; // Optional sender field for messages with a sender
+}
+
+export interface WorkspaceUserDetails {
+  name: string;
+  icon?: string;
+  role: string;
+}
+
+export interface UserDetails {
+  name: string;
+  lastName: string;
+  email: string;
+  avatarUrl?: string | undefined;
+  createdAt: Date;
+  workspaces : WorkspaceUserDetails[];
+}
+
+export interface updateUserRequest {
+  name?: string;
+  lastName?: string;
+  email?: string;
+  avatarUrl?: string | undefined;
+}
+
+export interface workspaceUpdateRequest {
+  workspaceId: string;
+  name?: string;
+  description?: string;
+  icon?: string;
 }

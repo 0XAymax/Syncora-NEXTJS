@@ -94,7 +94,7 @@ export default function Page() {
           // Merge new tasks with existing tasks, avoiding duplicates
           const taskIds = new Set(prevTodos.map((task) => task.id));
           const uniqueNewTasks = newTasks.filter(
-            (task) => !taskIds.has(task.id)
+            (task:Task) => !taskIds.has(task.id)
           );
 
           return [...prevTodos, ...uniqueNewTasks];

@@ -10,7 +10,7 @@ import {DragDropContext, Droppable, Draggable, DropResult, DragStart, DragUpdate
 import { updateStatusAPI } from "@/app/_api/TasksAPI";
 import {toast} from "sonner";
 import {AxiosError} from "axios";
-
+import { format } from "date-fns"
 function KanbanBoard({
   workspaceId,
   todos,
@@ -124,7 +124,7 @@ function KanbanBoard({
                 <h4 className="text-sm font-medium">{task.title}</h4>
               </div>
               <div className="text-xs text-muted-foreground ml-6">
-                Due: {new Date(task.dueDate).toISOString().split("T")[0]}
+                Due: {format(new Date(task.dueDate).toISOString().split("T")[0],"MMMM d, yyyy")}
               </div>
               {!isPersonal && (
                 <div className="text-xs text-muted-foreground ml-6 mt-1">

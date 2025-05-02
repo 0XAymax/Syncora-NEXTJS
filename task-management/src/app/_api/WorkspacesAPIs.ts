@@ -1,6 +1,6 @@
 import axios from "axios";
 import { WorkspaceMember } from "@/lib/types";
-import { WorkspaceCreateRequest } from "@/types";
+import { WorkspaceCreateRequest, workspaceUpdateRequest } from "@/types";
 
 interface Task {
   id: string;
@@ -20,6 +20,7 @@ const MEMBERS_API = `${API_URL}/api/workspace/members`;
 const CHANGE_ROLE_API = `${API_URL}/api/workspace/change-role`;
 const TASKS_API = `${API_URL}/api/task/tasks`;
 const DELETE_WORKSPACE_API = `${API_URL}/api/workspace/delete`;
+const UPDATE_WORKSPACE_API = `${API_URL}/api/workspace/update`;
 const WORKSPACE_API = `${API_URL}/api/workspace/check/`;
 const REMOVE_MEMBER_API = `${API_URL}/api/workspace/remove-member`;
 const LEAVE_API = `${API_URL}/api/workspace/leave`;
@@ -136,6 +137,26 @@ export const deleteWorkspaceAPI = async (workspaceId: string) => {
   } catch (error) {
     console.error("Error deleting workspace:", error);
   }
+};
+
+export const updateWorkspaceAPI = async (workspace: workspaceUpdateRequest) => {
+  const token = localStorage.getItem("token");
+  const response = await axios.put(
+    UPDATE_WORKSPACE_API,
+    {
+      workspaceId: workspace.workspaceId,
+      name: workspace.name,
+      description: workspace.description,
+      icon: workspace.icon,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
 };
 
 export const changeRoleAPI = async (

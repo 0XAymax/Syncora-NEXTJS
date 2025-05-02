@@ -37,13 +37,15 @@ export const registerAPI = async (
   email: string,
   name: string,
   lastName: string,
-  password: string
+  password: string,
+  avatarUrl?:string,
 ) => {
   const response = await axios.post(REGISTER_API, {
     name,
     lastName,
     email,
     password,
+    avatarUrl,
   });
   return response;
 };

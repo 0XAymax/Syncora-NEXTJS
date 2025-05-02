@@ -43,7 +43,7 @@ export const login = async (req, res) => {
 };
 
 export const addUser = async (req, res) => {
-  const { name, lastName, email, password } = req.body;
+  const { name, lastName, email, password,avatarUrl } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
 
   try {
@@ -53,6 +53,7 @@ export const addUser = async (req, res) => {
         lastName: lastName,
         email: email,
         password: hashedPassword,
+        avatarUrl :avatarUrl,
       },
     });
     res.status(201).json({ message: "User registered successfully" });

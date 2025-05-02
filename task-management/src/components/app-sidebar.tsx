@@ -11,7 +11,7 @@ import {
   LayoutDashboard,
   LogOut,
   Settings2,
-  User,
+  User, UserRound,
 } from "lucide-react";
 import {
   Sidebar,
@@ -60,19 +60,28 @@ const data = {
   ],
   navSecondary: [
     {
+      title: "Profile",
+      url: "", //no need
+      icon: UserRound,
+      hasButton : true,
+    },
+    {
       title: "Calendar",
       url: "#calendar",
       icon: Calendar,
+      hasButton : false,
     },
     {
       title: "Settings",
       url: "/dashboard/settings",
       icon: Settings2,
+      hasButton : false,
     },
     {
       title: "Logout",
       url: "/logout",
       icon: LogOut,
+      hasButton : false,
     },
   ],
 };

@@ -48,6 +48,7 @@ export const getRecentWorkspaces = async (req, res) => {
       where: { userId },
       include: { workspace: true },
       orderBy: { viewedAt: "desc" },
+      take : 8,
     });
 
     return res.status(200).json(recentWorkspaces);

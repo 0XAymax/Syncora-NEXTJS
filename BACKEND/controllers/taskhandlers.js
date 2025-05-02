@@ -109,39 +109,27 @@ export const DeleteTask = async (req, res) => {
 
 export const UpdateTask = async (req, res) => {
   const userId = req.userId;
-  const { workspaceId, taskId, assignees, ...updateFields } = req.body;
+  const { workspaceId, taskId,...updateFields } = req.body;
 
   if (!workspaceId || !taskId) {
     return res
       .status(400)
       .json({ error: "Both workspaceId and taskId are required." });
   }
-  // Remove fields explicitly set to null or undefined
+
   const filteredUpdates = Object.fromEntries(
     Object.entries(updateFields).filter(
       ([_, value]) => value !== null && value !== undefined
     )
   );
-  // If no valid fields to update
-  if (Object.keys(filteredUpdates).length === 0 && !assignees) {
+  if (Object.keys(filteredUpdates).length === 0) {
     return res
       .status(400)
       .json({ error: "No valid fields provided for update." });
   }
 
   try {
-    // Handle assignees if provided
-    let assigneeUpdate = {};
-    if (assignees) {
-      assigneeUpdate = {
-        assignees: {
-          create: assignees.map((userId) => ({
-            userId: userId, // Correctly reference the userId field
-          })),
-        },
-      };
-    }
-    // Update the task
+
     const updatedTask = await prisma.task.update({
       where: {
         id: taskId,
@@ -149,8 +137,22 @@ export const UpdateTask = async (req, res) => {
       },
       data: {
         ...filteredUpdates,
-        ...assigneeUpdate, // Merge assignee updates if any
       },
+      include: {
+        assignees: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                lastName: true,
+                email: true,
+                avatarUrl: true,
+              },
+            },
+          }
+        }
+      }
     });
 
     res.status(200).json({
@@ -360,58 +362,7 @@ export const getAllTasks = async (req, res) => {
     });
   }
 };
-/**expected return 
- [
-  {
-    "id": 1,
-    "title": "Design Homepage",
-    "description": "Create a responsive homepage design.",
-    "createdAt": "2023-10-01T10:00:00Z",
-    "workspace": {
-      "id": 101,
-      "name": "Marketing Team",
-      "icon": "https://example.com/icons/marketing.png"
-    },
-    "createdBy": {
-      "id": 201,
-      "name": "Alice",
-      "lastName": "Smith",
-      "email": "alice@example.com"
-    },
-    "assignees": [
-      {
-        "user": {
-          "id": 301,
-          "name": "Bob",
-          "lastName": "Johnson",
-          "email": "bob@example.com",
-          "avatarUrl": "https://example.com/avatars/bob.png"
-        },
-        "assignedBy": {
-          "id": 201,
-          "name": "Alice",
-          "lastName": "Smith"
-        }
-      },
-      {
-        "user": {
-          "id": 302,
-          "name": "Charlie",
-          "lastName": "Brown",
-          "email": "charlie@example.com",
-          "avatarUrl": "https://example.com/avatars/charlie.png"
-        },
-        "assignedBy": {
-          "id": 201,
-          "name": "Alice",
-          "lastName": "Smith"
-        }
-      }
-    ]
-  }
-]
 
- */
 export const getTasksByUserId = async (req, res) => {
   try {
     const userId = req.userId;

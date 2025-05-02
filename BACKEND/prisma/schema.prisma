@@ -31,6 +31,7 @@ model User {
   workspaceInvites     WorkspaceInvite[]   @relation("InvitedUserRelation")
   invitedBy            WorkspaceMember[]   @relation("InvitedBy")
   workspaceMembership  WorkspaceMember[]
+  successorWorkspaces  Workspace[]         @relation("Successor")
 }
 
 model UserPreferences {
@@ -57,6 +58,8 @@ model Workspace {
   createdAt        DateTime            @default(now())
   updatedAt        DateTime            @default(now())
   isPersonal       Boolean             @default(false)
+  successorId      String?
+  successor        User?               @relation("Successor", fields: [successorId], references: [id])
   recentWorkspaces RecentWorkspace[]
   recTasks         RecurringTask[]
   tasks            Task[]
@@ -65,6 +68,7 @@ model Workspace {
   invites          WorkspaceInvite[]
   members          WorkspaceMember[]
 }
+
 
 model WorkspaceMember {
   id          String         @id @default(uuid())
@@ -77,7 +81,6 @@ model WorkspaceMember {
   user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   workspace   Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 }
-
 model Task {
   id            String         @id @default(uuid())
   title         String
@@ -115,7 +118,6 @@ model TaskAssignee {
   task         Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
-
 model TaskActivity {
   id        String           @id @default(uuid())
   taskId    String
@@ -158,6 +160,7 @@ model RecentWorkspace {
   @@index([viewedAt])
 }
 
+
 model Inbox {
   id        String    @id @default(uuid())
   userId    String
@@ -170,6 +173,7 @@ model Inbox {
   sender    User?     @relation(fields: [senderId], references: [id])
   user      User      @relation("UserInboxRelation", fields: [userId], references: [id], onDelete: Cascade)
 }
+
 
 model WorkspaceInvite {
   id             String       @id @default(uuid())
@@ -198,6 +202,7 @@ enum TaskStatus {
   pending
   in_progress
   completed
+  not_determined
 }
 
 enum RecurringFrequency {

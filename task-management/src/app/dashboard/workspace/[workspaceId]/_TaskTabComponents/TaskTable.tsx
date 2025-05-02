@@ -2,7 +2,7 @@
 import React, {useState} from 'react';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ChevronRight, MoreHorizontal, User} from 'lucide-react';
+import {ChevronRight, Edit, MoreHorizontal, User} from 'lucide-react';
 import { NewTaskDialog } from '../_TasksCRUDComponents/AddTaskForm';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { EditTaskDialog } from '../_TasksCRUDComponents/EditTaskForm';
@@ -14,6 +14,7 @@ import {updateStatusAPI, updateTaskPriorityAPI} from "@/app/_api/TasksAPI";
 import {toast} from "sonner";
 import {AxiosError} from "axios";
 import PopoverComponent from './PopoverComponent';
+import {format} from "date-fns";
 
 const TaskTable = ({
   workspaceId,
@@ -42,6 +43,15 @@ const TaskTable = ({
 }) => {
     const [priorityPopoverTask, setPriorityPopoverTask] = useState<string | null>(null)
     const [statusPopoverTask, setStatusPopoverTask] = useState<string | null>(null)
+    const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [taskToEdit, setTaskToEdit] = useState<string | null>(null);
+
+    const handleOpenEditDialog = (taskId: string) => {
+        setTaskToEdit(taskId);
+        setTimeout(() => {
+            setEditDialogOpen(true);
+        }, 10);
+    };
 
     const updatePriority = async(taskId: string, newPriority: string) => {
         try{
@@ -121,6 +131,7 @@ const TaskTable = ({
     };
 
     return (
+        <>
         <div className="rounded-md border">
             <Table>
                 <TableHeader>
@@ -173,7 +184,7 @@ const TaskTable = ({
                                     />
                                 </TableCell>
                                 <TableCell>
-                                    {new Date(todo.dueDate).toISOString().split("T")[0]}
+                                    {format(new Date(todo.dueDate).toISOString().split("T")[0],"MMMM d, yyyy")}
                                 </TableCell>
                                 {!isPersonal && (
                                     <TableCell className="flex items-center pt-3">
@@ -209,12 +220,11 @@ const TaskTable = ({
                                             </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end">
-                                            <DropdownMenuItem asChild>
-                                                <EditTaskDialog
-                                                    workspaceId={workspaceId}
-                                                    taskId={todo.id}
-                                                    setTodos={setTodos}
-                                                />
+                                            <DropdownMenuItem
+                                                className="w-full h-8 justify-start text-muted-foreground"
+                                                onSelect={() => handleOpenEditDialog(todo.id)}>
+                                                <Edit className="mr-2 h-4 w-4" />
+                                                Edit
                                             </DropdownMenuItem>
                                             <DropdownMenuItem asChild>
                                                 <DeleteTaskAlert
@@ -257,6 +267,17 @@ const TaskTable = ({
                 </TableBody>
             </Table>
         </div>
+            {taskToEdit && (
+                <EditTaskDialog
+                    workspaceId={workspaceId}
+                    taskId={taskToEdit}
+                    todos={todos}
+                    setTodos={setTodos}
+                    open={editDialogOpen}
+                    onOpenChange={setEditDialogOpen}
+                />
+            )}
+    </>
     );
 };
 
