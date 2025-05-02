@@ -16,10 +16,11 @@ import {
 
 import { jwtDecode } from "jwt-decode";
 
-interface User {
+export interface User {
   id: string;
   email: string;
   name: string;
+  role: string;
 }
 
 interface AuthContextType {
