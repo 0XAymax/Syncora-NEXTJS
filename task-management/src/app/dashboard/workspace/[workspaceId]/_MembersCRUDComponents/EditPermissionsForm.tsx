@@ -55,13 +55,13 @@ export function EditPermissionsForm({
       console.log(res);
       if (res && res.status < 300 && res.status >= 200) {
         const prevMembers = members;
-        const updatedMembers = prevMembers.map((m) => {
+        const updatedMembers = prevMembers?.map((m) => {
           if (m.user.id === member.user.id) {
             return { ...m, role: newRole } as WorkspaceMember;
           }
           return m;
         });
-        setMembers(updatedMembers);
+        setMembers(updatedMembers || []);
         toast.success("Role updated successfully.");
         setLoading(false);
         setOpen(false);

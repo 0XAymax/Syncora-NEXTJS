@@ -20,6 +20,7 @@ const MEMBERS_API = `${API_URL}/api/workspace/members`;
 const CHANGE_ROLE_API = `${API_URL}/api/workspace/change-role`;
 const TASKS_API = `${API_URL}/api/task/tasks`;
 const DELETE_WORKSPACE_API = `${API_URL}/api/workspace/delete`;
+const WORKSPACE_API = `${API_URL}/api/workspace/check/`;
 
 export const createWorkspaceAPI = async (workspace: WorkspaceCreateRequest) => {
   const token = localStorage.getItem("token");
@@ -88,6 +89,17 @@ export const fetchActiveWorkspaces = async (): Promise<Workspace[]> => {
   } catch (error) {
     console.error("Error fetching workspaces:", error);
     return [];
+  }
+};
+
+export const fetchWorkspaceById = async (workspaceId: string) => {
+  console.log(workspaceId);
+  console.log(WORKSPACE_API + workspaceId);
+  try {
+    const response = await axios.get(WORKSPACE_API + workspaceId);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching workspace:", error);
   }
 };
 

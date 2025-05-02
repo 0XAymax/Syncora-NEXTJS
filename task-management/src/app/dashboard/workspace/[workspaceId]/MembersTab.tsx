@@ -4,7 +4,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import React, { useState } from "react";
 import { TabsContent } from "@/components/ui/tabs";
-import { useMembersByWorkspace } from "@/hooks/use-workspace";
 import { useAuth } from "@/hooks/use-auth";
 import { InviteDialog } from "./_MembersCRUDComponents/InviteMemberForm";
 import { Workspace } from "@/types";
@@ -12,12 +11,16 @@ import { EditPermissionsForm } from "./_MembersCRUDComponents/EditPermissionsFor
 import { WorkspaceMember } from "@/lib/types";
 import { User } from "@/hooks/use-auth";
 
-export default function MembersTab({ workspace }: { workspace: Workspace }) {
+export default function MembersTab({
+  workspace,
+  members,
+  setMembers,
+}: {
+  workspace: Workspace;
+  members: WorkspaceMember[];
+  setMembers: React.Dispatch<React.SetStateAction<WorkspaceMember[]>>;
+}) {
   const { currentUser } = useAuth();
-  const { data: defMembers } = useMembersByWorkspace(workspace.id);
-  const [members, setMembers] = useState<WorkspaceMember[] | undefined>(
-    defMembers
-  );
   const [filter, setFilter] = useState<string>("");
 
   const canChangePermission = (
@@ -67,11 +70,23 @@ export default function MembersTab({ workspace }: { workspace: Workspace }) {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">Name:</span>
-              <Input
-                className="h-8 w-24"
-                placeholder="Text"
-                onChange={handleFilterChange}
-              />
+              <div className="relative">
+                <Input
+                  className="h-8 w-24 pr-8"
+                  placeholder="Text"
+                  onChange={handleFilterChange}
+                />
+                {filter && (
+                  <button
+                    type="button"
+                    onClick={() => setFilter("")}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground hover:text-foreground cursor-pointer"
+                    aria-label="Clear filter"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 
