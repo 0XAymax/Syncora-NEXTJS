@@ -55,6 +55,7 @@ export const deleteWorkspace = async (req, res) => {
       .json({ message: "Failed to delete workspace", error: error.message });
   }
 };
+
 export const getWorkspacesByuserId = async (req, res) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
@@ -94,6 +95,31 @@ export const getWorkspacesByuserId = async (req, res) => {
   } catch (error) {
     console.error("Error fetching workspaces:", error);
     res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const getWorkspaceById = async (req, res) => {
+  console.log("Fetching workspace by ID:", req.body);
+  try {
+    const workspaceId = req.params.workspaceId;
+
+    if (!workspaceId) {
+      return res.status(400).json({ message: "Workspace ID is required" });
+    }
+
+    const workspace = await prisma.workspace.findUnique({
+      where: { id: workspaceId },
+    });
+
+    if (!workspace) {
+      return res.status(404).json({ message: "Workspace not found" });
+    }
+
+    res.status(200).json(!!workspace);
+  } catch (error) {
+    console.error("Error fetching workspace:", error);
+    res.status(500).json({ error: "Internal server error" + error });
+    console.log("Error fetching workspace:", error);
   }
 };
 export const getMembersByWorkspaceId = async (req, res) => {

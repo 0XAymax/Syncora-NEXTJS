@@ -6,6 +6,12 @@ import * as workspaceMiddleware from "../middleware/workspacemiddleware.js";
 import { authenticateUser } from "../middleware/middleware.js";
 export const routerr = express.Router();
 
+routerr.get(
+  "/check/:workspaceId",
+  // authenticateUser,
+  workspaceHandlers.getWorkspaceById
+);
+
 routerr.get("/workspaces", workspaceHandlers.getWorkspacesByuserId);
 
 routerr.put(
