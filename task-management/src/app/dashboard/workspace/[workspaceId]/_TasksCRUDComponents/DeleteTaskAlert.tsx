@@ -55,7 +55,10 @@ export default function DeleteTaskAlert({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteClick}>
+            <AlertDialogAction
+              onClick={handleDeleteClick}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
               Continue
             </AlertDialogAction>
           </AlertDialogFooter>
