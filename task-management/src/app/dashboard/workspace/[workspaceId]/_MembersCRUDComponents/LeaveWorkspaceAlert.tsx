@@ -1,4 +1,5 @@
 "use client";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,51 +13,59 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Delete } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { deleteTaskAPI } from "@/app/_api/TasksAPI";
-import { Task } from "@/lib/types";
+import { leaveWorkspaceAPI } from "@/app/_api/WorkspacesAPIs";
+import { Workspace } from "@/types";
 import { toast } from "sonner";
-export default function DeleteTaskAlert({
-  workspaceId,
-  taskId,
-  setTodos,
+import { useRouter } from "next/navigation";
+export default function LeaveWorkspaceAlert({
+  workspace,
 }: {
-  workspaceId: string;
-  taskId: string;
-  setTodos: React.Dispatch<React.SetStateAction<Task[]>>;
+  workspace: Workspace;
 }) {
+  const workspaceName =
+    (workspace.icon && workspace.icon + " ") + workspace.name;
+
+  const router = useRouter();
+
   const handleDeleteClick = async () => {
     try {
-      const res = await deleteTaskAPI(workspaceId, taskId);
-      setTodos((prev) => prev.filter((todo) => todo.id != res.deletedTask.id));
-      toast.success("Task deleted successfully.");
+      const data = await leaveWorkspaceAPI(workspace.id);
+      console.log("Response from leaveWorkspaceAPI:", data);
+      toast.success(`Left ${workspaceName} successfully.`);
+      router.push("/dashboard");
     } catch (error) {
-      console.error(`Error Deleting task ${taskId}:`, error);
-      toast.error("Error deleting task");
+      console.error(`Error leaving workspace ${workspace.id}:`, error);
+      toast.error(`Error leaving ${workspaceName}.`);
     }
   };
+
   return (
     <>
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button
-            variant="ghost"
-            className="w-full h-8 justify-start text-destructive focus:text-destructive cursor-pointer"
+            variant="destructive"
+            size="sm"
+            className="h-7 text-xs hover:bg-destructive/90"
           >
             <Delete className="mr-2 h-2 w-4" />
-            Delete
+            Leave
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              Do you want to delete this task ?
+              Do you want to leave {workspaceName} ?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteClick}>
-              Continue
+            <AlertDialogAction
+              onClick={handleDeleteClick}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Leave
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

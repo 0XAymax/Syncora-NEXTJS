@@ -74,6 +74,16 @@ routerr.post(
   workspaceHandlers.changeUserRole
 );
 
+routerr.post(
+  "/transfer-ownership",
+  handleInputError,
+  authenticateUser,
+  workspaceMiddleware.verifyworkspace,
+  workspaceMiddleware.checkIsOwner,
+  workspaceMiddleware.userMembershipCheck,
+  workspaceHandlers.transferOwnership
+);
+
 routerr.delete(
   "/leave",
   handleInputError,

@@ -22,7 +22,8 @@ export const verifyToken = async (req, res, next) => {
       where: { id: req.user.id },
     });
 
-    if (!user) {
+    if (!user || user.email !== req.user.email) {
+      console.error("User not found or email mismatch:", user, req.user);
       throw new Error("User not found");
     }
 
@@ -59,7 +60,7 @@ export const addUserIdToBody = (req, res, next) => {
     res.status(403).json({ message: "Invalid Token" });
   }
 };
-export const authenticateUser = async(req, res, next) => {
+export const authenticateUser = async (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
     console.log("Token:", token);
@@ -108,5 +109,4 @@ export const authenticateUser = async(req, res, next) => {
       .status(500)
       .json({ error: "Internal Server Error", details: err.message });
   }
-
 };

@@ -17,11 +17,12 @@ const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 const CREATE_WORKSPACE_API = `${API_URL}/api/workspace/create`;
 const WORKSPACES_API = `${API_URL}/api/workspace/workspaces`;
 const MEMBERS_API = `${API_URL}/api/workspace/members`;
-const CHANGE_ROLE_API = `${API_URL}/api/workspace/change-role`;
 const TASKS_API = `${API_URL}/api/task/tasks`;
 const DELETE_WORKSPACE_API = `${API_URL}/api/workspace/delete`;
 const UPDATE_WORKSPACE_API = `${API_URL}/api/workspace/update`;
 const WORKSPACE_API = `${API_URL}/api/workspace/check/`;
+const CHANGE_ROLE_API = `${API_URL}/api/workspace/change-role`;
+const TRANSFER_OWNERSHIP_API = `${API_URL}/api/workspace/transfer-ownership`;
 const REMOVE_MEMBER_API = `${API_URL}/api/workspace/remove-member`;
 const LEAVE_API = `${API_URL}/api/workspace/leave`;
 
@@ -177,6 +178,28 @@ export const changeRoleAPI = async (
     return response;
   } catch (error) {
     console.error("Error changing role:", error);
+  }
+};
+
+export const transferOwnershipAPI = async (
+  workspaceId: string,
+  successorId: string
+) => {
+  const token = localStorage.getItem("token");
+  try {
+    const response = await axios.post(
+      TRANSFER_OWNERSHIP_API,
+      {
+        workspaceId,
+        successorId,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return response;
+  } catch (error) {
+    console.error("Error transferring ownership:", error);
   }
 };
 

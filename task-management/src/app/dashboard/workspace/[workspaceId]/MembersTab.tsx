@@ -11,13 +11,17 @@ import { EditPermissionsForm } from "./_MembersCRUDComponents/EditPermissionsFor
 import { WorkspaceMember } from "@/lib/types";
 import { User } from "@/hooks/use-auth";
 import KickMemberAlert from "./_MembersCRUDComponents/KickMemberAlert";
+import LeaveWorkspaceAlert from "./_MembersCRUDComponents/LeaveWorkspaceAlert";
+import { TransferOwnershipAlert } from "./_MembersCRUDComponents/TransferOwnershipAlert";
 
 export default function MembersTab({
   workspace,
+  setWorkspace,
   members,
   setMembers,
 }: {
   workspace: Workspace;
+  setWorkspace: any;
   members: WorkspaceMember[];
   setMembers: React.Dispatch<React.SetStateAction<WorkspaceMember[]>>;
 }) {
@@ -30,7 +34,7 @@ export default function MembersTab({
   ) => {
     if (!currentUser) return false;
     if (currentUser.id === workspace.ownerId) return true;
-    if (currentUser.role === "admin" && member.id !== workspace.ownerId)
+    if (currentUser.role === "admin" && member.user.id !== workspace.ownerId)
       return true;
     return false;
   };
@@ -115,15 +119,22 @@ export default function MembersTab({
                         {member.user.id === currentUser?.id && " (You)"}
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        {member.id === workspace.ownerId
-                          ? "Owner"
+                        {member.user.id === workspace.ownerId
+                          ? "owner"
                           : member.role}
                       </div>
                     </div>
                   </div>
-                  {canChangePermission(currentUser, member) &&
-                    currentUser?.id !== member.user.id && (
+                  {currentUser?.id !== member.user.id ? (
+                    canChangePermission(currentUser, member) && (
                       <div className="flex gap-2">
+                        {currentUser?.id === workspace.ownerId && (
+                          <TransferOwnershipAlert
+                            workspace={workspace}
+                            setWorkspace={setWorkspace}
+                            member={member}
+                          />
+                        )}
                         <EditPermissionsForm
                           members={members}
                           member={member}
@@ -136,7 +147,10 @@ export default function MembersTab({
                           workspaceId={workspace.id}
                         />
                       </div>
-                    )}
+                    )
+                  ) : (
+                    <LeaveWorkspaceAlert workspace={workspace} />
+                  )}
                 </div>
               ))}
           </div>

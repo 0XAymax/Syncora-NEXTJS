@@ -20,7 +20,9 @@ function Page() {
   const [members, setMembers] = useState<WorkspaceMember[]>([]);
   const { addRecentWorkspace } = useRecentWorkspacesContext();
   const { workspaces, loading } = useWorkspaces();
-  const workspace = workspaces.find((w) => w.id === workspaceId);
+  const [workspace, setWorkspace] = useState(
+    workspaces.find((w) => w.id === workspaceId)
+  );
   const isPersonal = workspace?.isPersonal ?? false;
 
   useEffect(() => {
@@ -82,6 +84,7 @@ function Page() {
         {!isPersonal && workspace && (
           <MembersTab
             workspace={workspace}
+            setWorkspace={setWorkspace}
             members={members}
             setMembers={setMembers}
           />
