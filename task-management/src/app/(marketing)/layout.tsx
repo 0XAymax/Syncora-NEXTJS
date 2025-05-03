@@ -1,14 +1,17 @@
+"use client"
 import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/ui/modeToggle";
 import Link from "next/link";
 import React from "react";
+import {useAuth} from "@/hooks/use-auth";
 
-export default function marketingLayout({
+export default function MarketingLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { isAuthenticated } = useAuth();
   return (
     <>
       <header className="flex justify-between items-center h-16 py-3 px-5.5 border-border border-b-1">
@@ -17,9 +20,15 @@ export default function marketingLayout({
           <Link href="/sign-up">
             <Button variant="outline">Sign Up</Button>
           </Link>
-          <Link href="/sign-in">
-            <Button>Sign In</Button>
-          </Link>
+          {isAuthenticated ? (
+              <Link href="/dashboard">
+                <Button>Sign In</Button>
+              </Link>
+          ):(
+              <Link href="/sign-in">
+                <Button>Sign In</Button>
+              </Link>
+          )}
           <ModeToggle />
         </div>
       </header>

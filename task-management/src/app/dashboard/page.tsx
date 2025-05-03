@@ -4,7 +4,7 @@ import RecentWorkspaces from "./_dashbordComponents/RecentWorkspaces";
 import TaskForToday from "./_dashbordComponents/TaskForToday";
 import ActiveWorkspaces from "./_dashbordComponents/ActiveWorkspaces";
 import CalendarSection from "./_dashbordComponents/CalendarSection";
-import { useState, useEffect, useCallback } from "react";
+import {useState, useEffect, useCallback} from "react";
 import { Task } from "@/lib/types";
 import {
   startOfMonth,
@@ -17,6 +17,7 @@ import {
 } from "date-fns";
 import { getTasksByUserId } from "../_api/TasksAPI";
 import { useAuth } from "@/hooks/use-auth";
+import SkeletonDashboard from "@/app/dashboard/_dashbordComponents/Skeleton";
 
 export default function Page() {
   const { currentUser } = useAuth();
@@ -139,12 +140,9 @@ export default function Page() {
   }, [currentUser, fetchTasksForRange, lowerDate, higherDate]);
 
   if (!currentUser || loading) {
-    return (
-      <div className="flex flex-1 items-center justify-center p-6">
-        <p className="text-lg font-semibold">Loading...</p>
-      </div>
-    );
+    return <SkeletonDashboard />;
   }
+
 
   return (
     <div className="flex flex-1 flex-col gap-8 p-6">

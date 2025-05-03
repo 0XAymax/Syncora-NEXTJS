@@ -260,7 +260,7 @@ enum InboxType {
   workspace_role_updated     
   removed_from_workspace
   workspace_deleted     
-
+  workspace_create
   task_assigned              
   task_updated               
   task_status_changed        

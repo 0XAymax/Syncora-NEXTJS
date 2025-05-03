@@ -81,7 +81,6 @@ export const updateTaskAPI = async (
 
 export const getTasksByWorkspaceId = async (workspaceId: string) => {
   const token = localStorage.getItem("token");
-  try {
     const response = await axios.post(
       GET_TASKS_API,
       { workspaceId },
@@ -90,9 +89,6 @@ export const getTasksByWorkspaceId = async (workspaceId: string) => {
       }
     );
     return response.data;
-  } catch (error) {
-    console.error(`Error fetching tasks for workspace ${workspaceId}:`, error);
-  }
 };
 
 export const getTasksByUserId = async (

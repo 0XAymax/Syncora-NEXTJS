@@ -322,6 +322,7 @@ export const getAllTasks = async (req, res) => {
                 lastName: true,
                 email: true,
                 avatarUrl: true,
+                createdAt: true,
               },
             },
             assignedBy: {
@@ -429,7 +430,6 @@ export const getTasksByUserId = async (req, res) => {
       },
     });
 
-    console.log("tasks:", tasks);
     // Return the fetched tasks as a JSON response
     res.status(200).json(tasks);
   } catch (error) {

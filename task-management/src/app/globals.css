@@ -60,38 +60,53 @@
 }
 
 .dark {
-  --background: var(--color-slate-900);
-  --foreground: var(--color-slate-50);
-  --card: var(--color-slate-800);
-  --card-foreground: var(--color-slate-50);
-  --popover: var(--color-slate-700);
-  --popover-foreground: var(--color-slate-50);
-  --primary: var(--color-slate-200);
-  --primary-foreground: var(--color-slate-800);
-  --secondary: var(--color-slate-700);
-  --secondary-foreground: var(--color-slate-50);
-  --muted: var(--color-slate-700);
-  --muted-foreground: var(--color-slate-300);
-  --accent: var(--color-slate-800);
-  --accent-foreground: var(--color-slate-50);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: var(--color-slate-400);
+  /* Updated with shadcn dark mode colors */
+  --background: hsl(240 10% 3.9%);
+  --foreground: hsl(0 0% 98%);
+
+  --card: hsl(240 10% 3.9%);
+  --card-foreground: hsl(0 0% 98%);
+
+  --popover: hsl(240 10% 3.9%);
+  --popover-foreground: hsl(0 0% 98%);
+
+  --primary: hsl(0 0% 98%);
+  --primary-foreground: hsl(240 5.9% 10%);
+
+  --secondary: hsl(240 3.7% 15.9%);
+  --secondary-foreground: hsl(0 0% 98%);
+
+  --muted: hsl(240 3.7% 15.9%);
+  --muted-foreground: hsl(240 5% 64.9%);
+
+  --accent: hsl(240 3.7% 15.9%);
+  --accent-foreground: hsl(0 0% 98%);
+
+  --destructive: hsl(0 62.8% 30.6%);
+  --destructive-foreground: hsl(0 0% 98%);
+
+  --border: hsl(240 3.7% 15.9%);
+  --input: hsl(240 3.7% 15.9%);
+  --ring: hsl(240 4.9% 83.9%);
+
+  /* Keeping your chart colors */
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: var(--color-slate-900);
-  --sidebar-foreground: var(--color-slate-50);
-  --sidebar-primary: var(--color-slate-500);
-  --sidebar-primary-foreground: var(--color-slate-50);
-  --sidebar-accent: var(--color-slate-700);
-  --sidebar-accent-foreground: var(--color-slate-50);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: var(--color-slate-600);
 
+  /* Updated sidebar colors to match shadcn dark theme */
+  --sidebar: hsl(240 10% 3.9%);
+  --sidebar-foreground: hsl(0 0% 98%);
+  --sidebar-primary: hsl(0 0% 98%);
+  --sidebar-primary-foreground: hsl(240 5.9% 10%);
+  --sidebar-accent: hsl(240 3.7% 15.9%);
+  --sidebar-accent-foreground: hsl(0 0% 98%);
+  --sidebar-border: hsl(240 3.7% 15.9%);
+  --sidebar-ring: hsl(240 4.9% 83.9%);
+
+  /* Keeping your tag colors */
   --tag-red: hsl(354, 70%, 35%);
   --tag-red-foreground: hsl(354, 90%, 95%);
   --tag-blue: hsl(210, 70%, 35%);
@@ -191,7 +206,8 @@
 
   /* Links */
   a {
-    @apply font-medium text-primary hover:underline underline-offset-4;
+    @apply font-medium text-primary;
+    text-decoration: none;
   }
 
   /* Table */

@@ -2,7 +2,7 @@
 import React, {useState} from 'react';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import {ChevronRight, Edit, MoreHorizontal, User} from 'lucide-react';
+import {CalendarIcon, ChevronRight, Edit, MoreHorizontal, User} from 'lucide-react';
 import { NewTaskDialog } from '../_TasksCRUDComponents/AddTaskForm';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { EditTaskDialog } from '../_TasksCRUDComponents/EditTaskForm';
@@ -15,6 +15,7 @@ import {toast} from "sonner";
 import {AxiosError} from "axios";
 import PopoverComponent from './PopoverComponent';
 import {format} from "date-fns";
+import AvatarUser from "@/components/Avatar-User";
 
 const TaskTable = ({
   workspaceId,
@@ -184,14 +185,34 @@ const TaskTable = ({
                                     />
                                 </TableCell>
                                 <TableCell>
-                                    {format(new Date(todo.dueDate).toISOString().split("T")[0],"MMMM d, yyyy")}
+                                    <div className="flex items-center">
+                                        <CalendarIcon className="h-3.5 w-3.5 mr-1" />
+                                        {format(new Date(todo.dueDate).toISOString().split("T")[0],"MMMM d, yyyy")}
+                                    </div>
                                 </TableCell>
                                 {!isPersonal && (
                                     <TableCell className="flex items-center pt-3">
                                         <div className="flex items-center gap-2">
                                             <div className="flex items-center">
-                                                <User className="h-4 w-4 mr-1" />
+                                                {todo.assignees?.[0] ? (
+                                                    <AvatarUser
+                                                        name={todo.assignees?.[0]?.user.name}
+                                                        lastName={todo.assignees?.[0]?.user.lastName}
+                                                        avatarUrl={todo.assignees?.[0]?.user.avatarUrl}
+                                                        height={8}
+                                                        width={8}
+                                                        borderSize={2}
+                                                        hasBorder={false}
+                                                    />
+                                                ):(
+                                                    <User className="h-4 w-4 mr-1" />
+                                                )}
                                                 {todo.assignees?.[0]?.user?.name}
+                                                {(todo.assignees?.length ?? 0) > 1 && (
+                                                    <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                                                     +{(todo.assignees?.length ?? 1) - 1}
+                                                    </span>
+                                                )}
                                             </div>
                                             <Button
                                                 variant="ghost"

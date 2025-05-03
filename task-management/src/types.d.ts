@@ -21,6 +21,7 @@ interface User {
   lastName?: string;
   email?: string;
   avatarUrl?: string | undefined;
+  createdAt?: Date;
 }
 
 interface AssignedBy {

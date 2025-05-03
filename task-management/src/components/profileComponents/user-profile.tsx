@@ -7,7 +7,6 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import { Badge } from "@/components/ui/badge"
 import {
     Sheet,
     SheetContent,
@@ -36,7 +35,6 @@ interface UserProfileSheetProps {
     children: React.ReactNode;
 }
 const UserProfileSheet = forwardRef<HTMLButtonElement, UserProfileSheetProps>(({ children }, ref) => {
-    const status ="active"
     const [userDetailsState,setUserDetailsState] =useState<UserDetails>({
         name: "",
         lastName: "",
@@ -141,7 +139,7 @@ const UserProfileSheet = forwardRef<HTMLButtonElement, UserProfileSheetProps>(({
                                     {isEditing ? (
                                         <div className="relative group cursor-pointer" onClick={triggerFileInput}>
                                             <Avatar className="w-24 h-24 border-2 border-primary/20 group-hover:border-primary/50 transition-all">
-                                                <AvatarImage src={avatarSrc} />
+                                                <AvatarImage src={avatarSrc || undefined} />
                                                 <AvatarFallback className="bg-muted">
                                                     <User className="h-12 w-12 text-muted-foreground" />
                                                 </AvatarFallback>
@@ -162,9 +160,6 @@ const UserProfileSheet = forwardRef<HTMLButtonElement, UserProfileSheetProps>(({
                                                     <UserIcon className="h-12 w-12" />
                                                 </AvatarFallback>
                                             </Avatar>
-                                            <Badge className="absolute -bottom-2 right-0 bg-green-500/10 text-green-600 border-green-200 hover:bg-green-500/20">
-                                                {status.charAt(0).toUpperCase() + status.slice(1)}
-                                            </Badge>
                                         </div>
                                     )
                                     }

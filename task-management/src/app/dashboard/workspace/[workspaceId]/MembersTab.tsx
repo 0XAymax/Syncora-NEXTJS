@@ -1,11 +1,10 @@
 "use client";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import React, { useState } from "react";
 import { TabsContent } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/use-auth";
 import { InviteDialog } from "./_MembersCRUDComponents/InviteMemberForm";
+
 import { Workspace } from "@/types";
 import { EditPermissionsForm } from "./_MembersCRUDComponents/EditPermissionsForm";
 import { WorkspaceMember } from "@/lib/types";
@@ -13,6 +12,8 @@ import { User } from "@/hooks/use-auth";
 import KickMemberAlert from "./_MembersCRUDComponents/KickMemberAlert";
 import LeaveWorkspaceAlert from "./_MembersCRUDComponents/LeaveWorkspaceAlert";
 import { TransferOwnershipAlert } from "./_MembersCRUDComponents/TransferOwnershipAlert";
+import AvatarUser from "@/components/Avatar-User";
+
 
 export default function MembersTab({
   workspace,
@@ -105,14 +106,15 @@ export default function MembersTab({
                   className="flex items-center justify-between rounded-md border p-2"
                 >
                   <div className="flex items-center gap-2">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage
-                        src={`/placeholder.svg?height=32&width=32`}
-                      />
-                      <AvatarFallback>
-                        {member.user.name.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
+                    <AvatarUser
+                        name={member.user.name}
+                        lastName={member.user.lastName}
+                        avatarUrl={member.user.avatarUrl}
+                        height={10}
+                        width={10}
+                        borderSize={2}
+                        hasBorder={true}
+                    />
                     <div>
                       <div className="text-sm font-medium">
                         {member.user.name}

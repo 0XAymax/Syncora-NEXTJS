@@ -14,32 +14,33 @@ export const addToInbox = async (req, res) => {
   const { recievers, senderId, message, type } = req.body;
   try {
     if (!recievers || recievers.length === 0) {
-      return res.status(400).json({ message: "Recievers are required" });
+      throw new Error("Receivers are required");
     }
     if (!message) {
-      return res.status(400).json({ message: "Message is required" });
+      throw new Error("Message is required");
     }
     if (!type) {
-      return res.status(400).json({ message: "Type is required" });
+      throw new Error("Type is required");
     }
     if (typeof senderId !== "string") {
-      return res.status(400).json({ message: "Sender ID must be a string" });
+      throw new Error("Sender ID must be a string");
     }
+
     for (let i = 0; i < recievers.length; i++) {
       const recieverId = recievers[i];
-      const inbox = await prisma.inbox.create({
+      await prisma.inbox.create({
         data: {
-          senderId: senderId,
+          senderId,
           userId: recieverId,
-          message: message,
-          type: type,
+          message,
+          type,
           read: false,
         },
       });
     }
   } catch (error) {
     console.error("Error creating inbox:", error);
-    res.status(500).json({ message: "Internal server error" });
+    throw error; // 💥 throws the error to be handled by the caller
   }
 };
 

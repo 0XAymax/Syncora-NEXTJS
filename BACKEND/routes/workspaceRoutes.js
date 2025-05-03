@@ -12,8 +12,6 @@ routerr.get(
   workspaceHandlers.getWorkspaceById
 );
 
-routerr.get("/workspaces", workspaceHandlers.getWorkspacesByuserId);
-
 routerr.put(
   "/update",
   handleInputError,
@@ -99,4 +97,9 @@ routerr.post(
   workspaceHandlers.getMembersByWorkspaceId
 );
 
+<<<<<<< 104-feature-roles
+=======
+routerr.get('/Dashboard', authenticateUser, workspaceMiddleware.userMembershipCheck, workspaceHandlers.getAllworkspaces);
+     
+>>>>>>> main
 export default routerr;

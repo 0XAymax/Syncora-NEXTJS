@@ -76,8 +76,12 @@ export function TaskList({ selectedDate, tasks }: TaskListProps) {
                     href={`/dashboard/workspace/${task.workspaceId}`}
                     className="flex items-center text-muted-foreground hover:text-primary"
                   >
-                    <Building className="mr-1 h-3.5 w-3.5" />
-                    <span>{task.workspaceId}</span>
+                      {(task.workspace?.icon !=null && task.workspace?.icon != "" ) ?(
+                          <span className="mr-1">{task.workspace?.icon}</span>
+                      ):(
+                          <Building className="mr-1 h-3.5 w-3.5" />
+                      )}
+                    <span>{task.workspace?.name}</span>
                   </Link>
                 </div>
                 {task.description && (

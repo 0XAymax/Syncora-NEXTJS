@@ -69,7 +69,7 @@ function ActiveWorkspaces() {
                         setOpenStates((prev) => ({ ...prev, [workspace.id]: open }))
                     }
                 >
-                    <div className="flex items-center justify-between rounded-md bg-gray-200 p-3">
+                    <div className="flex items-center justify-between rounded-md bg-input p-3">
                   <CollapsibleTrigger asChild>
                     <div className="flex items-center gap-2"  onClick={() => toggleWorkspace(workspace.id)}>
                       <ChevronRight
@@ -90,17 +90,17 @@ function ActiveWorkspaces() {
                                 <div className="flex flex-col gap-2">
                                     <h4 className="text-sm font-semibold text-gray-700">Workspace Details</h4>
                                     <div>
-                                    <span className="text-xs font-medium  text-gray-500">
+                                    <span className="text-xs font-medium  text-muted-foreground">
                                           Description
                                      </span>
                                         {workspace.description ? (
-                                            <p className="text-sm text-gray-700 mt-0.5">{workspace.description}</p>
+                                            <p className="text-sm text-primary mt-0.5">{workspace.description}</p>
                                         ) : (
-                                            <p className="text-sm italic text-gray-500 mt-0.5">No description provided</p>
+                                            <p className="text-sm italic  text-muted-foreground mt-0.5">No description provided</p>
                                         )}
                                     </div>
                                     <div className="mt-1 pt-2 border-t border-gray-100">
-                                     <span className="text-xs text-gray-500">
+                                     <span className="text-xs  text-muted-foreground">
                                             Last updated: {format(workspace.updatedAt.split("T")[0],"MMMM d, yyyy") || "Unknown"}
                                      </span>
                                     </div>

@@ -33,8 +33,8 @@ export function NavSecondary({
               <SidebarMenuButton asChild>
                 {item.hasButton ? (
                     <UserProfileSheet>
-                      <div className="flex items-center gap-2 text-primary rounded-md hover:bg-sidebar-accent w-[240px] h-8 cursor-pointer">
-                        <item.icon className="h-4 w-4 ml-2 " />
+                      <div className="flex items-center gap-2 text-primary rounded-md hover:bg-sidebar-accent w-[240px] h-8 cursor-pointer font-medium">
+                        <item.icon className="h-4 w-4 ml-2" />
                         <span>{item.title}</span>
                       </div>
                     </UserProfileSheet>

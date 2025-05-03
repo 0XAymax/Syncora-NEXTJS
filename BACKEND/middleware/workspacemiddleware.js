@@ -3,19 +3,26 @@ import dotenv from "dotenv";
 export const prisma = new PrismaClient();
 dotenv.config();
 export const verifyworkspace = async (req, res, next) => {
-  const { workspaceId } = req.body;
-  if (!workspaceId) {
-    return res.status(400).json({ error: "Workspace ID is required" });
-  }
-
-  try {
-    const workspace = await prisma.workspace.findUnique({
-      where: {
-        id: workspaceId,
-      },
-    });
-    if (!workspace) {
-      return res.status(404).json({ message: "Workspace not found" });
+    const { workspaceId } = req.body;
+    if (!workspaceId) {
+      return res.status(400).json({ error: "Workspace ID is required" });
+    }
+  
+    try {
+        const workspace = await prisma.workspace.findUnique({
+            where: {
+                id: workspaceId,
+            },
+        });
+      if (!workspace) {
+          console.log("Workspace not found ajmi:", workspaceId);
+          return res.status(404).json({ message: "Workspace not found" });
+          
+        }
+        console.log("Workspace verified successfully:");
+        
+    } catch (error) {
+        res.status(500).json({ message: "Error verifying workspace" });
     }
     console.log("Workspace verified successfully:");
     req.workspace = workspace; // Attach the workspace to the request object
@@ -26,17 +33,26 @@ export const verifyworkspace = async (req, res, next) => {
 };
 export const userMembershipCheck = async (req, res, next) => {
   const userId = req.userId;
-  try {
-    const workspaceId = req.body.workspaceId;
-    console.log("workspaceId:", workspaceId);
-    const workspaceMembership = await prisma.workspaceMember.findFirst({
-      where: {
-        workspaceId: workspaceId,
-        userId: userId,
-      },
-    });
-    if (!workspaceMembership) {
-      console.error("User is not a member of the specified workspace");
+    try {
+        const workspaceId = req.body.workspaceId;
+        console.log("workspaceId to check membership:", workspaceId);
+        const workspaceMembership = await prisma.workspaceMember.findFirst({
+            where: {
+                workspaceId: workspaceId,
+                userId: userId,
+            },
+        });
+        if (!workspaceMembership) {
+            console.error("User is not a member of the specified workspace");
+            return res.status(403).json({ message: "User is not a member of the specified workspace" });
+        }
+        req.workspacemember = workspaceMembership;
+        console.log("User verified successfully in workspace:");
+
+
+        next();
+    } catch (error) {
+        console.error("Error verifying user membership:", error);
     }
     req.workspacemember = workspaceMembership;
     console.log("User verified successfully in workspace:");

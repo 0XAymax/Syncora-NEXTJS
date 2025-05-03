@@ -11,7 +11,7 @@ function RecentWorkspaces() {
     const personalWorkspaces= recent.filter((item) => item.workspace.isPersonal == true)
     const publicWorkspaces = recent.filter((item) => item.workspace.isPersonal == false)
     return (
-        <ScrollArea className="w-[1200px] whitespace-nowrap rounded-md pb-3">
+        <ScrollArea className="w-100% whitespace-nowrap rounded-md pb-3">
             <h2 className="mb-4 text-xl font-bold">Recent Workspaces</h2>
             <div className="flex gap-4 overflow-x-auto pb-2 ">
                         <AddWorkspaceDialog/>
